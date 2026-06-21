@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ===== SEO الأساسي ===== -->
+    <title>اختبار اختراق المواقع | AWR Security Labs - تقرير احترافي 100$</title>
+    <meta name="description" content="خدمة اختبار اختراق (VAPT) للمواقع الإلكترونية. احصل على تقرير مفصل (PDF, JSON, CSV) يحتوي على الثغرات المكتشفة وتوصيات الإصلاح. السعر 100 دولار فقط.">
+    <meta name="keywords" content="اختبار اختراق, فحص ثغرات, sql injection, تقرير أمني, VAPT, أمن سيبراني, AWR Security Labs">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://your-domain.com/">
+
+    <!-- ===== بيانات منظمة (عشان تظهر في نتائج البحث بشكل مميز) ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "AWR Security Labs",
+      "description": "خدمة اختبار اختراق للمواقع الإلكترونية مع تقارير احترافية",
+      "priceRange": "$100",
+      "telephone": "+967775113425",
+      "url": "https://your-domain.com/"
+    }
+    </script>
+
+    <style>
+        /* (نفس التصميم السابق مع بعض التعديلات البسيطة) */
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0b0f1c 0%, #1a233a 50%, #0d1117 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8); border-radius: 24px; padding: 40px 50px; max-width: 750px; width: 90%; text-align: center; transition: transform 0.3s ease; }
+        .container:hover { transform: scale(1.01); }
+        .logo { font-size: 2.8em; font-weight: 900; background: linear-gradient(90deg, #00f0ff, #7b2ffc, #00f0ff); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease infinite; }
+        .logo-sub { font-size: 0.8em; color: #8892b0; letter-spacing: 4px; margin-top: -5px; display: block; -webkit-text-fill-color: #8892b0; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .price-tag { background: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); padding: 10px 20px; border-radius: 50px; display: inline-block; margin: 15px 0; color: #ffd700; font-weight: bold; font-size: 1.4em; }
+        .desc { color: #ccd6f6; font-size: 1.1em; line-height: 1.8; }
+        
+        /* قسم التعليمات */
+        .instructions { background: rgba(0, 0, 0, 0.3); border-radius: 16px; padding: 20px; margin: 20px 0; text-align: right; border-right: 4px solid #00f0ff; }
+        .instructions h3 { color: #00f0ff; margin-top: 0; }
+        .instructions ul { color: #ccd6f6; list-style: none; padding: 0; }
+        .instructions li { margin-bottom: 12px; padding-right: 25px; position: relative; font-size: 0.95em; }
+        .instructions li::before { content: "⚡"; position: absolute; right: 0; color: #7b2ffc; }
+        .instructions .highlight { color: #ffd700; font-weight: bold; }
+
+        /* ===== قسم الأسئلة الشائعة (FAQ) لتحسين SEO ===== */
+        .faq-section { margin-top: 30px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .faq-section h3 { color: #00f0ff; font-size: 1.3em; margin-bottom: 15px; }
+        .faq-item { margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
+        .faq-item h4 { color: #ffd700; margin: 0 0 5px 0; font-size: 1.05em; }
+        .faq-item p { color: #ccd6f6; margin: 0; font-size: 0.95em; line-height: 1.6; }
+
+        .file-input-wrapper { background: rgba(0, 0, 0, 0.3); border: 2px dashed #4a5b7a; border-radius: 16px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
+        .file-input-wrapper:hover { border-color: #00f0ff; }
+        input[type="file"] { color: #ccd6f6; width: 100%; padding: 10px; cursor: pointer; }
+        ::-webkit-file-upload-button { background: #1a233a; border: 1px solid #4a5b7a; color: #ccd6f6; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        ::-webkit-file-upload-button:hover { background: #2a3a5a; border-color: #00f0ff; }
+        .btn-submit { background: linear-gradient(90deg, #00f0ff, #7b2ffc); border: none; color: #fff; padding: 15px 40px; border-radius: 50px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(123, 47, 252, 0.4); }
+        .footer { margin-top: 30px; color: #495670; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.9em; }
+        .footer strong { color: #00f0ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الشعار -->
+        <div class="logo">🛡️ AWR Security Labs</div>
+        <span class="logo-sub">✦ اختبار الاختراق & الأمن السيبراني ✦</span>
+
+        <div class="price-tag">💰 السعر: 100$ فقط (تقرير احترافي شامل)</div>
+
+        <!-- تعليمات العميل -->
+        <div class="instructions">
+            <h3>📋 كيف تعمل الخدمة؟</h3>
+            <ul>
+                <li><strong>الخطوة 1:</strong> أرسل لي <span class="highlight">رابط الصفحة</span> التي تريد فحصها (مثل <code style="color:#00f0ff;">example.com?id=1</code>).</li>
+                <li><strong>الخطوة 2:</strong> أرسل <span class="highlight">تفويضاً كتابياً</span> (إيميل رسمي).</li>
+                <li><strong>الخطوة 3:</strong> سأقوم بالفحص واستخراج البيانات.</li>
+                <li><strong>الخطوة 4:</strong> ستحصل على <span class="highlight">التقارير التالية</span>: MD · JSON · CSV (جاهزة للتسليم).</li>
+            </ul>
+        </div>
+
+        <div class="desc">
+            🔽 ارفع ملف السجل (SQLmap Log) لتحصل على تقريرك فوراً
+        </div>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="logfile" accept=".log,.txt" required>
+            </div>
+            <button type="submit" class="btn-submit">🚀 إنشاء التقرير</button>
+        </form>
+
+        <!-- ===== قسم الأسئلة الشائعة (لجذب البحث في جوجل) ===== -->
+        <div class="faq-section">
+            <h3>❓ الأسئلة الشائعة (FAQ)</h3>
+            <div class="faq-item">
+                <h4>ما هو اختبار الاختراق (VAPT)؟</h4>
+                <p>هو عملية فحص أمني يكتشف من خلالها الثغرات في موقعك الإلكتروني، مثل ثغرة حقن SQL، ويقدم لك تقريراً مفصلاً لإصلاحها.</p>
+            </div>
+            <div class="faq-item">
+                <h4>كم سعر التقرير؟</h4>
+                <p>سعر التقرير الاحترافي هو <strong>100 دولار أمريكي</strong> فقط، شامل جميع التفاصيل والتوصيات.</p>
+            </div>
+            <div class="faq-item">
+                <h4>هل أحتاج إلى خبرة تقنية للاستفادة من الخدمة؟</h4>
+                <p>لا، أنت فقط ترسل لي رابط موقعك وتفويضاً، وأنا أقوم بكل شيء وأرسل لك التقرير الجاهز.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            📞 للتواصل واتساب: <strong>+967775113425</strong>
+        </div>
+    </div>
+</body>
+</html>

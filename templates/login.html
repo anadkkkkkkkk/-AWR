@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - AWR Security Labs</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0b0f1c 0%, #1a233a 50%, #0d1117 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            border-radius: 24px;
+            padding: 40px 50px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+        .logo {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00f0ff, #7b2ffc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { color: #8892b0; font-size: 0.8em; -webkit-text-fill-color: #8892b0; margin-top: -5px; display: block; }
+        .desc { color: #ccd6f6; margin: 20px 0; }
+        input[type="password"] {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #4a5b7a;
+            border-radius: 12px;
+            padding: 15px;
+            width: 85%;
+            color: #fff;
+            font-size: 1em;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+        input[type="password"]:focus {
+            border-color: #00f0ff;
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+        .btn-login {
+            background: linear-gradient(90deg, #00f0ff, #7b2ffc);
+            border: none;
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 85%;
+            transition: 0.3s;
+        }
+        .btn-login:hover { transform: scale(1.02); box-shadow: 0 10px 25px rgba(123, 47, 252, 0.4); }
+        .error { color: #ff4757; margin-top: 10px; background: rgba(255, 71, 87, 0.1); padding: 10px; border-radius: 8px; }
+        .footer { margin-top: 20px; color: #495670; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.9em; }
+        .footer strong { color: #00f0ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🛡️ AWR Security</div>
+        <span class="logo-sub">✦ ACCESS CONTROL ✦</span>
+        <div class="desc">🔑 أدخل كلمة المرور للوصول إلى المنصة</div>
+        <form method="post">
+            <input type="password" name="password" placeholder="••••••••" required>
+            <br>
+            <button type="submit" class="btn-login">دخول</button>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </form>
+        <div class="footer">📞 للتواصل: <strong>+967775113425</strong></div>
+    </div>
+</body>
+</html>
