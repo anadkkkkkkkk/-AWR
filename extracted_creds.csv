@@ -1,0 +1,4 @@
+table,id,password,username
+users,1,123456,admin
+users,2,password,user
+users,3,hackme,shadow
