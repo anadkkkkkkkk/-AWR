@@ -1,0 +1,63 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><!-- InstanceBegin template="/Templates/MainTemplate.dwt.asp" codeOutsideHTMLIsLocked="false" -->
+<head>
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>acuforum
+Осб Ящик
+
+</title>
+<!-- InstanceEndEditable -->
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!-- InstanceBeginEditable name="head" --><!-- InstanceEndEditable -->
+<link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+<body> 
+<table width="100%"  border="0" cellpadding="10" cellspacing="0"> 
+  <tr bgcolor="#008F00"> 
+    <td width="306px"><a href="https://www.acunetix.com/"><img src="Images/logo.gif" width="306" height="38" border="0" alt="Acunetix website security"></a></td> 
+    <td align="right" valign="middle" bgcolor="#008F00" class="disclaimer">TEST and Demonstration site for <a href="https://www.acunetix.com/vulnerability-scanner/">Acunetix Web Vulnerability Scanner</a></td> 
+  </tr> 
+  <tr> 
+    <td colspan="2"><div class="menubar"><a href="Logout.asp?RetURL=%252FTemplatize.asp?item=html%252Fabout.html" class="menu">about</a> - <a href="Default.asp" class="menu">forums</a> - <a href="Search.asp" class="menu">search</a> 
+     - <a href="Login.asp?RetURL=%252Fshowthread.asp?id=4" class="menu">login</a> - <a href="Register.asp?RetURL=%252Fshowthread.asp?id=4" class="menu">register</a> 
+	- <a href="https://www.acunetix.com/vulnerability-scanner/sql-injection/" class="menu">SQL scanner</a> - <a href="https://www.acunetix.com/websitesecurity/sql-injection/" class="menu">SQL vuln help</a>
+    </div></td> 
+  </tr> 
+  <tr> 
+    <td colspan="2"><!-- InstanceBeginEditable name="MainContentLeft" -->
+		<div class="path">
+			<a href="showforum.asp?id=0">Acunetix Web Vulnerability Scanner</a>/Осб Ящик
+
+		</div>
+      <table width="100%" cellspacing="1" cellpadding="5" bgcolor="#E5E5E5">
+        <tr><td valign='top' align='center' bgcolor='#FFFFFF' width='120'><img src='avatars/noavatar.gif'><br>posted by <b>Andrewabimi</b> on 6/20/2026 6:23:14 AM</td><td valign='top' bgcolor='#FFFFFF'><div class='posttitle'>Осб Ящик
+ - 94.103.90.150</div><div class='posttext'>3 075 р уб https://yaschiki.ru/uslugi/morskaya-upakovka/
+ 
+Тара для крупногабаритных грузов https://yaschiki.ru/product/derevyannaya-obreshetka-1200-800-1000/
+ 
+высокое качество материалов (фанеры) и крепежных элементов, индивидуальный подход, внимательное отношение к каждому заказчику, доступная стоимость https://yaschiki.ru/product/derevyannii-yashchik-1200kh1200kh300/
+ 
+Существует множество разновидностей тары, выполненной из разных материалов https://yaschiki.ru/product/derevyannii-yashchik-2300-600-400/
+  Наиболее востребованы на современном рынке деревянные ящики, которые могут похвастать длинным списком преимуществ перед другими вариантами https://yaschiki.ru/product-category/obreshetka-gruza/
+ 
+Упаковку для крупногабаритного груза массой от 200 кг до 20 тонн делают из обрезной доски сечением от 22 мм, дно должно быть толщиной от 30 мм https://yaschiki.ru/upakovku-v-termousadku/
+  Все детали скрепляются анкерами с гайками, упрочняют ящик брусками-полозами, дополнительно для укрепления конструкции используют металлическую ленту https://yaschiki.ru/product-category/obreshetka-gruza/
+  Внутри ящик при необходимости обшивают ударопрочным материалом https://yaschiki.ru/product/derevyannii-yashchik-1300-600-700/
+ 
+Найти в Поиске https://yaschiki.ru/upakovka-dlya-aviaperevozki/
+ 
+</div></td></tr>
+      </table>
+      
+      <!-- InstanceEndEditable --></td> 
+  </tr> 
+  <tr align="right" bgcolor="#FFFFFF"> 
+    <td colspan="2" class="footer">Copyright 2019 Acunetix Ltd.</td> 
+  </tr> 
+</table> 
+<div style="background-color:lightgray;width:80%;margin:auto;text-align:center;font-size:12px;padding:1px">
+	<p style="padding-left:20%;padding-right:20%"><b>Warning</b>: This forum is deliberately vulnerable to SQL Injections, directory traversal, and other web-based attacks. It is built using ASP and it is here to help you test Acunetix. The entire content of the forum is erased daily. All the posts are real-life examples of how attackers are trying to break into insecure web applications. Please be careful and do not follow links that are posted by malicious parties.</p>
+</div>
+</body>
+<!-- InstanceEnd --></html>
