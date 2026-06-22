@@ -118,36 +118,119 @@ class SQLiLogParser:
 
 class PDF(FPDF):
     def header(self):
-        self.set_font('Arial', 'B', 16)
-        self.cell(0, 10, 'AWR Security Labs - تقرير أمني', 0, 1, 'C')
-        self.ln(5)
+        self.set_fill_color(4, 8, 15)
+        self.rect(0, 0, 210, 20, 'F')
+        self.set_font('Arial', 'B', 14)
+        self.set_text_color(0, 210, 255)
+        self.cell(0, 12, 'AWR Security Labs - Security Report', 0, 1, 'C')
+        self.set_text_color(200, 200, 200)
+        self.set_font('Arial', '', 8)
+        self.cell(0, 6, 'Penetration Testing & Vulnerability Assessment', 0, 1, 'C')
+        self.ln(4)
 
     def footer(self):
         self.set_y(-15)
         self.set_font('Arial', 'I', 8)
-        self.cell(0, 10, f'الصفحة {self.page_no()} | +967775113425', 0, 0, 'C')
+        self.set_text_color(100, 100, 120)
+        self.cell(0, 10, f'Page {self.page_no()} | AWR Security Labs | +967775113425 | Confidential', 0, 0, 'C')
 
-def generate_pdf(data, filename):
+def _safe(text):
+    if not text:
+        return ''
+    return str(text).encode('latin-1', errors='replace').decode('latin-1')
+
+def generate_pdf_bytes(data):
     pdf = PDF()
     pdf.add_page()
-    pdf.set_font('Arial', '', 12)
-    pdf.cell(0, 10, f"DBMS: {data.get('dbms', 'Unknown')}", 0, 1)
-    pdf.cell(0, 10, f"Parameter: {data.get('param', 'N/A')}", 0, 1)
-    pdf.ln(5)
-    for tbl, info in data.get('tables', {}).items():
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(0, 10, f"Table: {tbl}", 0, 1)
-        pdf.set_font('Arial', '', 10)
-        cols = info.get('columns', [])
-        if cols:
-            col_line = " | ".join(cols)
-            pdf.cell(0, 10, col_line, 0, 1)
-            pdf.cell(0, 5, "-" * 40, 0, 1)
-        for row in info.get('rows', []):
-            row_line = " | ".join(row.values())
-            pdf.cell(0, 8, row_line, 0, 1)
-        pdf.ln(5)
-    pdf.output(filename)
+    pdf.set_auto_page_break(auto=True, margin=20)
+
+    pdf.set_fill_color(10, 20, 35)
+    pdf.set_draw_color(0, 80, 120)
+
+    pdf.set_font('Arial', 'B', 13)
+    pdf.set_text_color(0, 210, 255)
+    pdf.cell(0, 8, 'SCAN SUMMARY', 0, 1)
+    pdf.set_draw_color(0, 210, 255)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+
+    pdf.set_font('Arial', '', 11)
+    pdf.set_text_color(220, 220, 220)
+    pdf.cell(50, 8, 'Database System:', 0, 0)
+    pdf.set_font('Arial', 'B', 11)
+    pdf.set_text_color(255, 200, 0)
+    pdf.cell(0, 8, _safe(data.get('dbms', 'Unknown')), 0, 1)
+
+    pdf.set_font('Arial', '', 11)
+    pdf.set_text_color(220, 220, 220)
+    pdf.cell(50, 8, 'Vulnerable Parameter:', 0, 0)
+    pdf.set_font('Arial', 'B', 11)
+    pdf.set_text_color(255, 100, 100)
+    pdf.cell(0, 8, _safe(data.get('param', 'N/A')), 0, 1)
+    pdf.ln(6)
+
+    tables = data.get('tables', {})
+    if tables:
+        pdf.set_font('Arial', 'B', 13)
+        pdf.set_text_color(0, 210, 255)
+        pdf.cell(0, 8, f'EXTRACTED DATA ({len(tables)} table(s) found)', 0, 1)
+        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+        pdf.ln(3)
+
+        for tbl, info in tables.items():
+            pdf.set_fill_color(15, 30, 50)
+            pdf.set_font('Arial', 'B', 11)
+            pdf.set_text_color(124, 58, 237)
+            pdf.cell(0, 8, f'  Table: {_safe(tbl)}', 1, 1, 'L', True)
+
+            cols = info.get('columns', [])
+            if cols:
+                pdf.set_font('Arial', 'B', 9)
+                pdf.set_text_color(180, 180, 180)
+                pdf.set_fill_color(8, 20, 35)
+                col_w = min(60, 180 // max(len(cols), 1))
+                for col in cols:
+                    pdf.cell(col_w, 7, _safe(col).upper(), 1, 0, 'C', True)
+                pdf.ln()
+
+            pdf.set_font('Arial', '', 9)
+            for i, row in enumerate(info.get('rows', [])):
+                pdf.set_fill_color(12, 25, 42) if i % 2 == 0 else pdf.set_fill_color(16, 32, 52)
+                pdf.set_text_color(200, 200, 200)
+                for val in row.values():
+                    pdf.cell(col_w, 7, _safe(val), 1, 0, 'C', True)
+                pdf.ln()
+            pdf.ln(4)
+
+    pdf.set_font('Arial', 'B', 13)
+    pdf.set_text_color(0, 210, 255)
+    pdf.cell(0, 8, 'RECOMMENDATIONS', 0, 1)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+    recs_en = [
+        '1. Use Parameterized Queries / Prepared Statements for all DB interactions.',
+        '2. Sanitize and validate all user inputs on the server side.',
+        '3. Apply Least Privilege principle to database accounts.',
+        '4. Enable a Web Application Firewall (WAF).',
+        '5. Conduct periodic VAPT assessments.',
+    ]
+    pdf.set_font('Arial', '', 10)
+    pdf.set_text_color(180, 220, 180)
+    for rec in recs_en:
+        pdf.cell(0, 7, rec, 0, 1)
+    pdf.ln(6)
+
+    pdf.set_fill_color(4, 15, 25)
+    pdf.set_draw_color(0, 80, 120)
+    pdf.rect(10, pdf.get_y(), 190, 20, 'DF')
+    pdf.set_font('Arial', 'B', 10)
+    pdf.set_text_color(0, 210, 255)
+    pdf.cell(0, 8, 'Contact: +967775113425  |  AWR Security Labs  |  CONFIDENTIAL', 0, 1, 'C')
+    pdf.set_font('Arial', '', 8)
+    pdf.set_text_color(100, 120, 140)
+    pdf.cell(0, 6, 'This report is for authorized use only. Unauthorized distribution is prohibited.', 0, 1, 'C')
+
+    return pdf.output(dest='S').encode('latin-1')
 
 @app.route('/')
 def home():
@@ -271,10 +354,8 @@ def download_report(report_id):
             for row in info.get('rows', []):
                 csv_data += f"{tbl},{row.get('id','')},{row.get('username','')},{row.get('password','')}\n"
         zf.writestr('extracted_creds.csv', csv_data)
-        pdf_filename = f'report_{report_id}.pdf'
-        generate_pdf(data, pdf_filename)
-        zf.write(pdf_filename)
-        os.remove(pdf_filename)
+        pdf_bytes = generate_pdf_bytes(data)
+        zf.writestr(f'report_{report_id}.pdf', pdf_bytes)
     zip_buffer.seek(0)
     return send_file(zip_buffer, as_attachment=True, download_name=f'report_{report_id}.zip', mimetype='application/zip')
 
