@@ -37,3 +37,8 @@ externalPort = 80
 [deployment]
 deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "app:app"]
+
+[userenv]
+
+[userenv.shared]
+SECRET_KEY = "awr-security-labs-prod-key-2025-xK9mP2qR7vL"

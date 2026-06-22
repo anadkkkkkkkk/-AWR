@@ -13,7 +13,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = os.environ.get('SECRET_KEY', 'awr-fallback-dev-key-2025')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
@@ -287,6 +287,10 @@ def whatsapp():
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory('.', 'sitemap.xml')
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory('static', 'robots.txt')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
