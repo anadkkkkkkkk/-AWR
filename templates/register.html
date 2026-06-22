@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}إنشاء حساب — AWR Security Labs{% endblock %}
+{% block description %}أنشئ حساباً مجانياً في AWR Security Labs لرفع سجلات SQLmap والحصول على تقارير أمنية احترافية.{% endblock %}
+{% block canonical %}https://awr-security-labs.replit.app/register{% endblock %}
+
+{% block head %}
+<style>
+    .auth-wrap {
+        min-height: calc(100vh - 68px);
+        display: flex; align-items: center; justify-content: center;
+        padding: 40px 24px; position: relative; z-index: 1;
+    }
+    .auth-container { width: 100%; max-width: 480px; }
+    .auth-brand { text-align: center; margin-bottom: 32px; }
+    .auth-logo {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 68px; height: 68px;
+        background: linear-gradient(135deg,rgba(0,210,255,.12),rgba(124,58,237,.12));
+        border: 1px solid rgba(0,210,255,.25); border-radius: 18px;
+        font-size: 30px; margin-bottom: 16px;
+        box-shadow: 0 0 40px rgba(0,210,255,.08);
+    }
+    .auth-brand-name { font-size: 22px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .auth-brand-tag { font-size: 11px; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; display: block; margin-top: 4px; }
+    .auth-card {
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 22px; padding: 40px 36px;
+        box-shadow: 0 32px 80px rgba(0,0,0,.6); position: relative;
+    }
+    .auth-card::before, .auth-card::after {
+        content: ''; position: absolute; width: 22px; height: 22px; border-color: var(--accent); border-style: solid;
+    }
+    .auth-card::before { top: -1px; right: -1px; border-width: 2px 2px 0 0; border-radius: 0 8px 0 0; }
+    .auth-card::after  { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; border-radius: 0 0 0 8px; }
+    .auth-card-inner::before, .auth-card-inner::after {
+        content: ''; position: absolute; width: 22px; height: 22px; border-color: var(--accent2); border-style: solid;
+    }
+    .auth-card-inner::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-radius: 8px 0 0 0; }
+    .auth-card-inner::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-radius: 0 0 8px 0; }
+    .auth-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+    .auth-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+    .input-icon-wrap { position: relative; }
+    .input-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text-muted); pointer-events: none; }
+    .form-input-icon { padding-right: 44px !important; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .benefits {
+        display: flex; flex-direction: column; gap: 8px;
+        margin-bottom: 24px; padding: 16px;
+        background: rgba(16,185,129,.05); border: 1px solid rgba(16,185,129,.12);
+        border-radius: 12px;
+    }
+    .benefit { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #34d399; }
+    .auth-footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+    .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } .auth-card { padding: 28px 20px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-container">
+        <div class="auth-brand">
+            <div class="auth-logo">🛡️</div>
+            <div class="auth-brand-name">AWR Security Labs</div>
+            <span class="auth-brand-tag">Penetration Testing Platform</span>
+        </div>
+
+        <div class="auth-card auth-card-inner">
+            <div class="auth-title">إنشاء حساب جديد</div>
+            <div class="auth-sub">أنشئ حسابك المجاني وابدأ تحليل السجلات فوراً</div>
+
+            <div class="benefits">
+                <div class="benefit">✅ رفع وتحليل ملفات SQLmap</div>
+                <div class="benefit">✅ تقارير PDF وJSON وCSV</div>
+                <div class="benefit">✅ حفظ جميع تقاريرك</div>
+            </div>
+
+            <form method="post">
+                <div class="form-group">
+                    <label class="form-label">اسم المستخدم</label>
+                    <div class="input-icon-wrap">
+                        <span class="input-icon">👤</span>
+                        <input type="text" name="username" class="form-input form-input-icon" placeholder="اختر اسم مستخدم..." required autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <div class="input-icon-wrap">
+                        <span class="input-icon">📧</span>
+                        <input type="email" name="email" class="form-input form-input-icon" placeholder="example@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <div class="input-icon-wrap">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" name="password" class="form-input form-input-icon" placeholder="اختر كلمة مرور قوية..." required minlength="6">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top:4px;">
+                    🚀 إنشاء الحساب مجاناً
+                </button>
+            </form>
+
+            <div class="auth-footer" style="margin-top:20px;">
+                لديك حساب؟ <a href="/login">سجّل الدخول</a>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted);">
+            للدعم: <a href="/whatsapp" style="color:var(--accent);text-decoration:none;">واتساب +967775113425</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

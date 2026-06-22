@@ -1,842 +1,457 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWR Security Labs — لوحة التحكم</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+{% extends "base.html" %}
 
-        :root {
-            --bg-deep: #060a12;
-            --bg-card: #0d1421;
-            --bg-card2: #101827;
-            --bg-input: #111827;
-            --border: #1e2d45;
-            --border-glow: rgba(0,210,255,0.2);
-            --accent: #00d2ff;
-            --accent2: #7c3aed;
-            --accent3: #f59e0b;
-            --text-main: #e2e8f0;
-            --text-muted: #64748b;
-            --text-sub: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --gradient: linear-gradient(135deg, #00d2ff 0%, #7c3aed 100%);
-        }
+{% block title %}AWR Security Labs — اختبار الاختراق وكشف ثغرات SQL Injection{% endblock %}
+{% block description %}AWR Security Labs منصة احترافية لاختبار الاختراق وكشف ثغرات SQL Injection. احصل على تقرير PDF وJSON وCSV شامل بـ 100$ فقط. خدمة سريعة وموثوقة.{% endblock %}
+{% block canonical %}https://awr-security-labs.replit.app/{% endblock %}
 
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg-deep);
-            min-height: 100vh;
-            color: var(--text-main);
-        }
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AWR Security Labs",
+  "url": "https://awr-security-labs.replit.app/",
+  "description": "منصة اختبار الاختراق الاحترافية",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://awr-security-labs.replit.app/faq",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Penetration Testing",
+  "name": "AWR Security Labs",
+  "provider": { "@type": "Organization", "name": "AWR Security Labs" },
+  "offers": { "@type": "Offer", "price": "100", "priceCurrency": "USD" }
+}
+</script>
+{% endblock %}
 
-        /* Grid Background */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(0,210,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,210,255,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
+{% block head %}
+<style>
+    /* ===== HERO ===== */
+    .hero-section {
+        text-align: center;
+        padding: 80px 0 60px;
+        position: relative;
+    }
+    .hero-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 7px 18px;
+        background: rgba(0,210,255,.07);
+        border: 1px solid rgba(0,210,255,.2);
+        border-radius: 20px;
+        color: var(--accent); font-size: 13px; font-weight: 700;
+        margin-bottom: 24px; letter-spacing: .5px;
+    }
+    .hero-title {
+        font-size: clamp(32px, 6vw, 56px);
+        font-weight: 900; line-height: 1.15;
+        color: var(--text-main); margin-bottom: 20px;
+    }
+    .hero-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { font-size: 17px; color: var(--text-sub); max-width: 580px; margin: 0 auto 36px; line-height: 1.85; }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            height: 64px;
-            background: rgba(6, 10, 18, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .nav-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, rgba(0,210,255,0.15), rgba(124,58,237,0.15));
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        .nav-name {
-            font-size: 16px;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-tagline {
-            font-size: 10px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            display: block;
-            line-height: 1;
-        }
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .nav-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            background: rgba(16,185,129,0.08);
-            border: 1px solid rgba(16,185,129,0.2);
-            border-radius: 20px;
-            color: #34d399;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .dot-live {
-            width: 7px;
-            height: 7px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: blink 2s ease-in-out infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        .btn-logout {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 10px;
-            color: #f87171;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .btn-logout:hover { background: rgba(239,68,68,0.15); }
+    /* ===== STATS ===== */
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-frame {
+        position: relative;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 16px; padding: 24px 20px; text-align: center;
+        transition: border-color .2s, transform .2s;
+        overflow: hidden;
+    }
+    .stat-frame::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0;
+        height: 2px; background: var(--grad);
+    }
+    .stat-frame:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+    .stat-icon { font-size: 28px; margin-bottom: 10px; }
+    .stat-value {
+        font-size: 24px; font-weight: 900;
+        background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        margin-bottom: 4px;
+    }
+    .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: .5px; }
 
-        /* ===== MAIN LAYOUT ===== */
-        .main {
-            position: relative;
-            z-index: 1;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 24px 60px;
-        }
+    /* ===== MAIN GRID ===== */
+    .main-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; margin-bottom: 28px; }
 
-        /* ===== HERO HEADER ===== */
-        .hero {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            background: rgba(0,210,255,0.06);
-            border: 1px solid rgba(0,210,255,0.15);
-            border-radius: 20px;
-            color: var(--accent);
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-        .hero h1 {
-            font-size: clamp(28px, 5vw, 42px);
-            font-weight: 900;
-            line-height: 1.2;
-            color: var(--text-main);
-            margin-bottom: 14px;
-        }
-        .hero h1 span {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero p {
-            font-size: 16px;
-            color: var(--text-sub);
-            max-width: 520px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
+    /* ===== UPLOAD FRAME ===== */
+    .drop-zone {
+        border: 2px dashed var(--border-md); border-radius: 14px;
+        padding: 40px 24px; text-align: center; cursor: pointer;
+        transition: border-color .2s, background .2s; position: relative; margin-bottom: 18px;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(0,210,255,.03); }
+    .drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-icon { font-size: 40px; margin-bottom: 12px; }
+    .drop-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .drop-sub { font-size: 13px; color: var(--text-muted); }
+    .drop-types { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+    .type-pill {
+        padding: 4px 12px; background: var(--bg-input); border: 1px solid var(--border-md);
+        border-radius: 20px; font-size: 11px; color: var(--text-muted); font-weight: 700; font-family: var(--mono);
+    }
+    .file-chosen {
+        display: none; align-items: center; gap: 10px;
+        padding: 12px 16px;
+        background: rgba(0,210,255,.06); border: 1px solid rgba(0,210,255,.2);
+        border-radius: 10px; margin-bottom: 18px;
+        color: var(--accent); font-size: 14px;
+    }
+    .file-chosen.show { display: flex; }
 
-        /* ===== STATS ROW ===== */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .stat-card:hover {
-            border-color: var(--border-glow);
-            transform: translateY(-2px);
-        }
-        .stat-icon {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .stat-value {
-            font-size: 26px;
-            font-weight: 900;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
+    /* ===== STEP LIST ===== */
+    .steps { display: flex; flex-direction: column; gap: 14px; }
+    .step { display: flex; align-items: flex-start; gap: 12px; }
+    .step-num {
+        width: 30px; height: 30px; border-radius: 8px;
+        background: var(--grad);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .step-body { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+    .step-body strong { color: var(--text-main); }
 
-        /* ===== MAIN GRID ===== */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 24px;
-            margin-bottom: 24px;
-        }
+    /* ===== PRICE BOX ===== */
+    .price-box {
+        background: linear-gradient(135deg,rgba(0,210,255,.05),rgba(124,58,237,.05));
+        border: 1px solid rgba(0,210,255,.12);
+        border-radius: 14px; padding: 22px; text-align: center; margin-top: 18px;
+    }
+    .price-label { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .price-amount { font-size: 36px; font-weight: 900; color: var(--accent3); line-height: 1; }
+    .price-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
 
-        /* ===== UPLOAD CARD ===== */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-        }
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-        }
-        .card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        .icon-blue { background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.2); }
-        .icon-purple { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); }
-        .icon-amber { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
-        .icon-green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
+    /* ===== FEATURES ===== */
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    .feature-frame {
+        position: relative;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 16px; padding: 24px;
+        transition: border-color .2s, transform .2s;
+    }
+    .feature-frame::before, .feature-frame::after {
+        content: ''; position: absolute;
+        width: 14px; height: 14px; border-color: var(--accent); border-style: solid;
+    }
+    .feature-frame::before { top: -1px; right: -1px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }
+    .feature-frame::after  { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
+    .feature-frame:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+    .feat-emoji { font-size: 28px; margin-bottom: 12px; }
+    .feat-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .feat-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
 
-        .card-title-text {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .card-sub-text {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
+    /* ===== PROCESS STEPS ===== */
+    .process-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+    .process-step {
+        text-align: center; padding: 32px 20px; position: relative;
+    }
+    .process-step:not(:last-child)::after {
+        content: '←';
+        position: absolute; top: 40px; left: -8px;
+        color: var(--text-muted); font-size: 20px;
+    }
+    .process-num {
+        width: 52px; height: 52px; border-radius: 14px;
+        background: var(--grad); margin: 0 auto 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; font-weight: 900; color: #fff;
+        box-shadow: 0 8px 24px rgba(0,210,255,.25);
+    }
+    .process-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .process-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 
-        /* Drop zone */
-        .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            padding: 36px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--accent);
-            background: rgba(0,210,255,0.03);
-        }
-        .drop-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-        .drop-icon { font-size: 36px; margin-bottom: 12px; }
-        .drop-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
-        }
-        .drop-sub {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        .drop-types {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 12px;
-        }
-        .type-badge {
-            padding: 3px 10px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .file-selected {
-            display: none;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: rgba(0,210,255,0.06);
-            border: 1px solid rgba(0,210,255,0.2);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            color: var(--accent);
-            font-size: 14px;
-        }
-        .file-selected.show { display: flex; }
+    /* ===== ALERT ===== */
+    .upload-alert {
+        display: none; align-items: center; gap: 10px;
+        padding: 14px 18px; border-radius: 10px; margin-top: 16px;
+        font-size: 14px; font-weight: 500;
+    }
+    .upload-alert.show { display: flex; }
+    .alert-err { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); color: #f87171; }
+    .alert-ok  { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); color: #34d399; }
 
-        .btn-primary {
-            width: 100%;
-            background: var(--gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 14px;
-            color: #fff;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 20px rgba(0,210,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-primary:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 28px rgba(0,210,255,0.3);
-        }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+        .main-grid { grid-template-columns: 1fr; }
+        .stats-row { grid-template-columns: repeat(2,1fr); }
+        .features-grid { grid-template-columns: repeat(2,1fr); }
+        .process-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 560px) {
+        .stats-row { grid-template-columns: 1fr 1fr; }
+        .features-grid { grid-template-columns: 1fr; }
+        .process-grid { grid-template-columns: 1fr; }
+        .process-step::after { display: none; }
+    }
+</style>
+{% endblock %}
 
-        /* Loading */
-        .spinner {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ===== SIDEBAR CARDS ===== */
-        .info-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 0;
-        }
-        .steps-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        .step-num {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 800;
-            color: #fff;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-        .step-text {
-            font-size: 13px;
-            color: var(--text-sub);
-            line-height: 1.7;
-        }
-        .step-text strong { color: var(--text-main); }
-
-        /* Pricing box */
-        .price-box {
-            background: linear-gradient(135deg, rgba(0,210,255,0.06), rgba(124,58,237,0.06));
-            border: 1px solid rgba(0,210,255,0.15);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .price-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-        .price-value { font-size: 32px; font-weight: 900; color: var(--accent3); }
-        .price-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
-        /* ===== FEATURES GRID ===== */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .feature-card:hover {
-            border-color: var(--border-glow);
-            transform: translateY(-2px);
-        }
-        .feature-emoji { font-size: 24px; margin-bottom: 10px; }
-        .feature-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-        .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-
-        /* ===== FAQ ===== */
-        .faq-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-        .section-label {
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .section-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-main);
-            margin-bottom: 24px;
-        }
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .faq-item {
-            background: var(--bg-card2);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            transition: border-color 0.2s;
-        }
-        .faq-item:hover { border-color: var(--border-glow); }
-        .faq-q {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .faq-a { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
-
-        /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            padding: 24px;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .footer a { color: var(--accent); text-decoration: none; }
-        .footer-brand {
-            font-size: 15px;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 6px;
-        }
-
-        /* ===== ALERT ===== */
-        .alert {
-            display: none;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-top: 16px;
-            font-weight: 500;
-        }
-        .alert.show { display: flex; }
-        .alert-error {
-            background: rgba(239,68,68,0.08);
-            border: 1px solid rgba(239,68,68,0.2);
-            color: #f87171;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            .stats-row { grid-template-columns: repeat(3, 1fr); }
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .faq-grid { grid-template-columns: 1fr; }
-            .navbar { padding: 0 16px; }
-            .main { padding: 24px 16px 40px; }
-        }
-        @media (max-width: 480px) {
-            .stats-row { grid-template-columns: 1fr; }
-            .features-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="nav-brand">
-        <div class="nav-logo">🛡️</div>
-        <div>
-            <div class="nav-name">AWR Security Labs</div>
-            <span class="nav-tagline">Penetration Testing Platform</span>
-        </div>
-    </div>
-    <div class="nav-actions">
-        <div class="nav-badge">
-            <div class="dot-live"></div>
-            نشط
-        </div>
-        <a href="/logout" class="btn-logout">
-            <span>⏏</span> خروج
-        </a>
-    </div>
-</nav>
-
-<!-- MAIN -->
-<main class="main">
+{% block content %}
+<div class="page-wrap">
 
     <!-- HERO -->
-    <div class="hero">
-        <div class="hero-badge">
-            <span>⚡</span>
-            منصة تقارير الأمن السيبراني الاحترافية
-        </div>
-        <h1>
-            اكتشف الثغرات،<br>
-            <span>احصل على تقريرك فوراً</span>
+    <section class="hero-section">
+        <div class="hero-badge">⚡ منصة الأمن السيبراني العربية الاحترافية</div>
+        <h1 class="hero-title">
+            اكتشف ثغرات موقعك<br>
+            <span>واحصل على تقريرك فوراً</span>
         </h1>
-        <p>ارفع ملف السجل من SQLmap وستحصل على تقرير شامل جاهز للتسليم في ثوانٍ.</p>
-    </div>
+        <p class="hero-desc">خدمة اختبار اختراق (VAPT) احترافية. نكشف ثغرات SQL Injection وندمجها في تقرير شامل بصيغة PDF وJSON وCSV جاهز للتسليم.</p>
+        <div class="hero-actions">
+            {% if session.get('user_id') %}
+                <a href="/dashboard" class="btn btn-primary btn-lg">🚀 لوحة التحكم</a>
+            {% else %}
+                <a href="/register" class="btn btn-primary btn-lg">🚀 ابدأ مجاناً</a>
+                <a href="/whatsapp" class="btn btn-outline btn-lg">📱 تواصل معنا</a>
+            {% endif %}
+        </div>
+    </section>
 
     <!-- STATS -->
     <div class="stats-row">
-        <div class="stat-card">
+        <div class="stat-frame">
             <div class="stat-icon">📊</div>
             <div class="stat-value">JSON</div>
-            <div class="stat-label">تقرير منظم</div>
+            <div class="stat-label">تقرير بنيوي</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-frame">
             <div class="stat-icon">📋</div>
             <div class="stat-value">CSV</div>
             <div class="stat-label">بيانات مستخرجة</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">📝</div>
-            <div class="stat-value">MD</div>
-            <div class="stat-label">تقرير مفصل</div>
+        <div class="stat-frame">
+            <div class="stat-icon">📄</div>
+            <div class="stat-value">PDF</div>
+            <div class="stat-label">تقرير احترافي</div>
+        </div>
+        <div class="stat-frame">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value">$100</div>
+            <div class="stat-label">فقط للتقرير الكامل</div>
         </div>
     </div>
 
     <!-- MAIN GRID -->
-    <div class="grid-2">
+    <div class="main-grid" id="upload-section">
 
-        <!-- Upload Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon icon-blue">📤</div>
+        <!-- Upload Frame -->
+        <div class="section-frame frame-inner">
+            <div class="frame-label">رفع السجل</div>
+            <div class="card-header" style="margin-bottom:24px;">
+                <div class="card-icon ci-blue">📤</div>
                 <div>
-                    <div class="card-title-text">رفع ملف السجل</div>
-                    <div class="card-sub-text">ملفات SQLmap (.log / .txt)</div>
+                    <div class="card-title">رفع ملف SQLmap</div>
+                    <div class="card-sub">سجل .log أو .txt</div>
                 </div>
             </div>
 
+            {% if session.get('user_id') %}
             <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
                 <div class="drop-zone" id="dropZone">
                     <input type="file" name="logfile" id="fileInput" accept=".log,.txt" required>
                     <div class="drop-icon">📁</div>
                     <div class="drop-title">اسحب الملف هنا أو انقر للاختيار</div>
-                    <div class="drop-sub">الملفات المدعومة</div>
+                    <div class="drop-sub">حجم الملف الأقصى: 50MB</div>
                     <div class="drop-types">
-                        <span class="type-badge">.log</span>
-                        <span class="type-badge">.txt</span>
+                        <span class="type-pill">.log</span>
+                        <span class="type-pill">.txt</span>
                     </div>
                 </div>
-
-                <div class="file-selected" id="fileSelected">
-                    <span>✅</span>
-                    <span id="fileName">—</span>
-                </div>
-
-                <button type="submit" class="btn-primary" id="submitBtn">
-                    <span id="btnText">🚀 إنشاء التقرير الآن</span>
+                <div class="file-chosen" id="fileChosen"><span>✅</span><span id="chosenName">—</span></div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg" id="submitBtn">
+                    <span id="btnText">🚀 رفع وتحليل</span>
                     <div class="spinner" id="spinner"></div>
                 </button>
-
-                <div class="alert alert-error" id="errorAlert">
-                    <span>⚠️</span>
-                    <span id="errorText">حدث خطأ أثناء المعالجة</span>
-                </div>
+                <div class="upload-alert alert-err" id="errAlert"><span>⚠️</span><span id="errText">حدث خطأ</span></div>
             </form>
+            {% else %}
+            <div style="text-align:center;padding:40px 20px;">
+                <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+                <div style="font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:8px;">يجب تسجيل الدخول أولاً</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">أنشئ حساباً مجانياً لرفع ملفاتك وتحليلها</div>
+                <div style="display:flex;gap:10px;justify-content:center;">
+                    <a href="/register" class="btn btn-primary">إنشاء حساب</a>
+                    <a href="/login" class="btn btn-outline">دخول</a>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Sidebar -->
-        <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display:flex;flex-direction:column;gap:20px;">
 
             <!-- Steps -->
-            <div class="info-card">
-                <div class="card-header" style="margin-bottom: 20px; padding-bottom: 16px;">
-                    <div class="card-icon icon-purple">📋</div>
+            <div class="section-frame frame-inner" style="padding:24px;">
+                <div class="frame-label">كيف تعمل</div>
+                <div class="card-header" style="margin-bottom:20px;">
+                    <div class="card-icon ci-purple">📋</div>
                     <div>
-                        <div class="card-title-text">كيف تعمل الخدمة؟</div>
-                        <div class="card-sub-text">خطوات بسيطة وسريعة</div>
+                        <div class="card-title">خطوات الخدمة</div>
+                        <div class="card-sub">سهلة وسريعة</div>
                     </div>
                 </div>
-                <ul class="steps-list">
-                    <li class="step-item">
+                <div class="steps">
+                    <div class="step">
                         <div class="step-num">1</div>
-                        <div class="step-text">أرسل <strong>رابط الصفحة</strong> المطلوب فحصها مثل <code style="color:var(--accent);background:rgba(0,210,255,0.08);padding:2px 6px;border-radius:4px;font-size:12px;">example.com?id=1</code></div>
-                    </li>
-                    <li class="step-item">
+                        <div class="step-body">أرسل <strong>رابط الصفحة</strong> المطلوب فحصها</div>
+                    </div>
+                    <div class="step">
                         <div class="step-num">2</div>
-                        <div class="step-text">أرسل <strong>تفويضاً كتابياً</strong> رسمياً لإجراء الفحص</div>
-                    </li>
-                    <li class="step-item">
+                        <div class="step-body">أرسل <strong>تفويضاً رسمياً</strong> كتابياً</div>
+                    </div>
+                    <div class="step">
                         <div class="step-num">3</div>
-                        <div class="step-text">نقوم بالفحص واستخراج البيانات باستخدام <strong>SQLmap</strong></div>
-                    </li>
-                    <li class="step-item">
+                        <div class="step-body">نقوم بالفحص باستخدام <strong>SQLmap</strong></div>
+                    </div>
+                    <div class="step">
                         <div class="step-num">4</div>
-                        <div class="step-text">ارفع ملف السجل هنا وستحصل على <strong>تقريرك فوراً</strong></div>
-                    </li>
-                </ul>
+                        <div class="step-body">ارفع السجل هنا وستحصل على <strong>تقريرك فوراً</strong></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Price -->
-            <div class="info-card">
-                <div class="card-header" style="margin-bottom: 16px; padding-bottom: 16px;">
-                    <div class="card-icon icon-amber">💰</div>
-                    <div>
-                        <div class="card-title-text">التسعيرة</div>
-                        <div class="card-sub-text">تقرير احترافي شامل</div>
-                    </div>
-                </div>
+            <div class="section-frame" style="padding:24px;">
+                <div class="frame-label">التسعيرة</div>
                 <div class="price-box">
-                    <div class="price-label">سعر التقرير</div>
-                    <div class="price-value">$100</div>
-                    <div class="price-note">شامل JSON · CSV · MD + التوصيات</div>
+                    <div class="price-label">سعر التقرير الكامل</div>
+                    <div class="price-amount">$100</div>
+                    <div class="price-note">PDF · JSON · CSV · MD + توصيات أمنية</div>
                 </div>
-                <div style="margin-top: 16px; padding: 14px; background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); border-radius: 12px; text-align:center;">
-                    <div style="color:#34d399; font-size: 13px; font-weight: 600; margin-bottom: 4px;">📞 واتساب للتواصل</div>
-                    <div style="color: var(--text-sub); font-size: 14px; font-weight: 700;">+967775113425</div>
-                </div>
+                <a href="/whatsapp" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:12px;color:#4ade80;text-decoration:none;font-size:14px;font-weight:700;">
+                    📱 تواصل عبر واتساب
+                </a>
             </div>
+        </div>
+    </div>
 
+    <!-- PROCESS -->
+    <div class="section-frame frame-inner" style="margin-bottom:28px;">
+        <div class="frame-label">آلية العمل</div>
+        <div style="text-align:center;margin-bottom:28px;">
+            <div class="section-eyebrow">Process</div>
+            <div class="section-title">كيف نعمل معك؟</div>
+        </div>
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="process-num">1</div>
+                <div class="process-title">التواصل</div>
+                <div class="process-desc">أرسل لنا رابط موقعك والتفويض الرسمي</div>
+            </div>
+            <div class="process-step">
+                <div class="process-num">2</div>
+                <div class="process-title">الفحص</div>
+                <div class="process-desc">نفحص الموقع ونكتشف الثغرات باستخدام أدوات احترافية</div>
+            </div>
+            <div class="process-step">
+                <div class="process-num">3</div>
+                <div class="process-title">التحليل</div>
+                <div class="process-desc">ارفع سجل SQLmap وتحصل على تقرير شامل</div>
+            </div>
+            <div class="process-step">
+                <div class="process-num">4</div>
+                <div class="process-title">التقرير</div>
+                <div class="process-desc">احصل على PDF وJSON وCSV مع توصيات للإصلاح</div>
+            </div>
         </div>
     </div>
 
     <!-- FEATURES -->
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-emoji">🔍</div>
-            <div class="feature-name">كشف DBMS تلقائي</div>
-            <div class="feature-desc">يكتشف نوع قاعدة البيانات تلقائياً من سجل SQLmap</div>
+    <div id="features" style="margin-bottom:28px;">
+        <div style="text-align:center;margin-bottom:24px;">
+            <div class="section-eyebrow">Features</div>
+            <div class="section-title">ماذا يقدم لك <span>التقرير</span>؟</div>
         </div>
-        <div class="feature-card">
-            <div class="feature-emoji">📊</div>
-            <div class="feature-name">تقرير JSON منظم</div>
-            <div class="feature-desc">بيانات مهيكلة قابلة للقراءة برمجياً</div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-emoji">📋</div>
-            <div class="feature-name">ملف CSV للبيانات</div>
-            <div class="feature-desc">بيانات مستخرجة جاهزة للاستيراد في Excel</div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-emoji">🛡️</div>
-            <div class="feature-name">توصيات أمنية</div>
-            <div class="feature-desc">توصيات مخصصة حسب نوع قاعدة البيانات</div>
-        </div>
-    </div>
-
-    <!-- FAQ -->
-    <div class="faq-card">
-        <div class="section-label">FAQ</div>
-        <div class="section-title">الأسئلة الشائعة</div>
-        <div class="faq-grid">
-            <div class="faq-item">
-                <div class="faq-q"><span>🔒</span> ما هو اختبار الاختراق (VAPT)؟</div>
-                <div class="faq-a">عملية فحص أمني منهجية لاكتشاف الثغرات في الأنظمة والمواقع، مثل ثغرة SQL Injection، مع تقديم تقرير مفصل للإصلاح.</div>
+        <div class="features-grid">
+            <div class="feature-frame">
+                <div class="feat-emoji">🔍</div>
+                <div class="feat-title">كشف DBMS تلقائي</div>
+                <div class="feat-desc">يحدد نوع قاعدة البيانات (MySQL, SQLite, MSSQL...) تلقائياً</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q"><span>💰</span> ما سعر التقرير؟</div>
-                <div class="faq-a">سعر التقرير الاحترافي الشامل هو <strong style="color:var(--accent3)">$100 فقط</strong>، يتضمن جميع التفاصيل والتوصيات الأمنية.</div>
+            <div class="feature-frame">
+                <div class="feat-emoji">📄</div>
+                <div class="feat-title">تقرير PDF احترافي</div>
+                <div class="feat-desc">تقرير جاهز للتسليم بتنسيق PDF مع جميع التفاصيل</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q"><span>📁</span> ما هي الملفات التي سأحصل عليها؟</div>
-                <div class="faq-a">ستحصل على ملف ZIP يحتوي: تقرير Markdown مفصل، ملف JSON للبيانات، وملف CSV للبيانات المستخرجة.</div>
+            <div class="feature-frame">
+                <div class="feat-emoji">📊</div>
+                <div class="feat-title">بيانات JSON منظمة</div>
+                <div class="feat-desc">صيغة JSON قابلة للمعالجة برمجياً وسهلة القراءة</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q"><span>⚡</span> هل أحتاج خبرة تقنية؟</div>
-                <div class="faq-a">لا، فقط أرسل رابط الموقع والتفويض الرسمي، وسنقوم بكل شيء ونرسل لك التقرير الجاهز.</div>
+            <div class="feature-frame">
+                <div class="feat-emoji">📋</div>
+                <div class="feat-title">ملف CSV للبيانات</div>
+                <div class="feat-desc">جداول البيانات المستخرجة جاهزة للاستيراد في Excel</div>
+            </div>
+            <div class="feature-frame">
+                <div class="feat-emoji">🛡️</div>
+                <div class="feat-title">توصيات أمنية</div>
+                <div class="feat-desc">توصيات مخصصة حسب نوع قاعدة البيانات والثغرة</div>
+            </div>
+            <div class="feature-frame">
+                <div class="feat-emoji">⚡</div>
+                <div class="feat-title">معالجة فورية</div>
+                <div class="feat-desc">تحليل ملف السجل وإنشاء التقرير في ثوانٍ معدودة</div>
             </div>
         </div>
     </div>
 
-</main>
+    <!-- CTA -->
+    <div class="section-frame" style="text-align:center;padding:52px 32px;background:linear-gradient(135deg,rgba(0,210,255,.04),rgba(124,58,237,.04));">
+        <div class="frame-label">ابدأ الآن</div>
+        <div style="font-size:40px;margin-bottom:16px;">🚀</div>
+        <div class="section-title" style="margin-bottom:12px;">جاهز لبدء <span>اختبار الاختراق</span>؟</div>
+        <div class="section-desc" style="max-width:480px;margin:0 auto 28px;">أنشئ حساباً مجانياً الآن وابدأ رفع سجلات SQLmap للحصول على تقارير احترافية.</div>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+            <a href="/register" class="btn btn-primary btn-lg">🛡️ إنشاء حساب مجاني</a>
+            <a href="/whatsapp" class="btn btn-outline btn-lg">📱 تواصل معنا</a>
+        </div>
+    </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-brand">AWR Security Labs</div>
-    <div>منصة تقارير الأمن السيبراني الاحترافية — جميع الحقوق محفوظة © 2025</div>
-    <div style="margin-top:8px;">للتواصل: <a href="https://wa.me/967775113425">واتساب +967775113425</a></div>
-</footer>
+</div>
+{% endblock %}
 
+{% block scripts %}
 <script>
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
-    const fileSelected = document.getElementById('fileSelected');
-    const fileName = document.getElementById('fileName');
+    const fileChosen = document.getElementById('fileChosen');
+    const chosenName = document.getElementById('chosenName');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const spinner = document.getElementById('spinner');
-    const errorAlert = document.getElementById('errorAlert');
-    const errorText = document.getElementById('errorText');
+    const errAlert = document.getElementById('errAlert');
+    const errText = document.getElementById('errText');
 
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-            fileName.textContent = fileInput.files[0].name;
-            fileSelected.classList.add('show');
-        }
-    });
-
-    ['dragover', 'dragenter'].forEach(evt => {
-        dropZone.addEventListener(evt, e => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                chosenName.textContent = fileInput.files[0].name;
+                fileChosen.classList.add('show');
+            }
         });
-    });
-    ['dragleave', 'drop'].forEach(evt => {
-        dropZone.addEventListener(evt, e => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
+        ['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('drag-over'); }));
+        ['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('drag-over'); }));
+        dropZone.addEventListener('drop', e => {
+            const f = e.dataTransfer.files;
+            if (f.length) { fileInput.files = f; chosenName.textContent = f[0].name; fileChosen.classList.add('show'); }
         });
-    });
-    dropZone.addEventListener('drop', e => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            fileName.textContent = files[0].name;
-            fileSelected.classList.add('show');
-        }
-    });
 
-    document.getElementById('uploadForm').addEventListener('submit', function(e) {
-        if (!fileInput.files.length) return;
-        submitBtn.disabled = true;
-        btnText.textContent = 'جارٍ المعالجة...';
-        spinner.style.display = 'block';
-        errorAlert.classList.remove('show');
-
-        const formData = new FormData(this);
-        e.preventDefault();
-
-        fetch('/upload', { method: 'POST', body: formData })
-            .then(async res => {
-                if (!res.ok) {
-                    const data = await res.json().catch(() => ({}));
-                    throw new Error(data.error || 'حدث خطأ أثناء المعالجة');
-                }
-                return res.blob();
-            })
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'report.zip';
-                a.click();
-                URL.revokeObjectURL(url);
-            })
-            .catch(err => {
-                errorText.textContent = err.message;
-                errorAlert.classList.add('show');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                btnText.textContent = '🚀 إنشاء التقرير الآن';
-                spinner.style.display = 'none';
-            });
-    });
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            if (!fileInput.files.length) return;
+            submitBtn.disabled = true;
+            btnText.textContent = 'جارٍ الرفع والتحليل...';
+            spinner.style.display = 'block';
+            errAlert.classList.remove('show');
+        });
+    }
 </script>
-
-</body>
-</html>
+{% endblock %}

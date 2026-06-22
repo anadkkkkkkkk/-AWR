@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}الأسئلة الشائعة — AWR Security Labs{% endblock %}
+{% block description %}إجابات على أكثر الأسئلة شيوعاً حول خدمات اختبار الاختراق وتقارير SQL Injection في AWR Security Labs.{% endblock %}
+{% block canonical %}https://awr-security-labs.replit.app/faq{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"ما هو اختبار الاختراق؟","acceptedAnswer":{"@type":"Answer","text":"اختبار الاختراق هو عملية فحص أمني منهجية لاكتشاف الثغرات في الأنظمة والمواقع الإلكترونية قبل أن يستغلها المهاجمون."}},
+    {"@type":"Question","name":"كم سعر التقرير؟","acceptedAnswer":{"@type":"Answer","text":"سعر التقرير الاحترافي الشامل هو 100 دولار أمريكي فقط."}},
+    {"@type":"Question","name":"ما الملفات التي سأحصل عليها؟","acceptedAnswer":{"@type":"Answer","text":"ستحصل على ملف ZIP يحتوي تقرير PDF، ملف JSON، ملف CSV، وتقرير Markdown مفصل."}},
+    {"@type":"Question","name":"هل الخدمة قانونية؟","acceptedAnswer":{"@type":"Answer","text":"نعم، نشترط الحصول على تفويض رسمي كتابي قبل إجراء أي فحص."}}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block head %}
+<style>
+    .faq-hero { text-align: center; padding: 60px 0 48px; }
+    .faq-categories { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; justify-content: center; }
+    .faq-cat-btn {
+        padding: 8px 18px; border-radius: 20px;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        color: var(--text-sub); font-size: 13px; font-weight: 700;
+        cursor: pointer; transition: .2s; font-family: 'Tajawal', sans-serif;
+    }
+    .faq-cat-btn.active, .faq-cat-btn:hover { background: rgba(0,210,255,.08); border-color: rgba(0,210,255,.3); color: var(--accent); }
+
+    .faq-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+    .faq-item {
+        position: relative;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 16px; overflow: hidden;
+        transition: border-color .2s;
+    }
+    .faq-item:hover { border-color: var(--border-hi); }
+    .faq-item::before {
+        content: ''; position: absolute; right: 0; top: 0; bottom: 0;
+        width: 3px; background: var(--grad);
+    }
+    .faq-q {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 24px 20px 20px;
+        cursor: pointer; gap: 12px;
+    }
+    .faq-q-text { font-size: 15px; font-weight: 700; color: var(--text-main); }
+    .faq-icon {
+        width: 28px; height: 28px; border-radius: 8px;
+        background: rgba(0,210,255,.1); border: 1px solid rgba(0,210,255,.2);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--accent); font-size: 16px; flex-shrink: 0;
+        transition: transform .3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+        padding: 0 24px 0 20px; max-height: 0; overflow: hidden;
+        transition: max-height .35s ease, padding .35s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 24px 20px 20px; }
+    .faq-a-text { font-size: 14px; color: var(--text-sub); line-height: 1.8; }
+
+    .cta-frame {
+        background: linear-gradient(135deg,rgba(0,210,255,.05),rgba(124,58,237,.05));
+        border: 1px solid rgba(0,210,255,.12);
+        border-radius: 20px; padding: 44px 32px; text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+    <div class="faq-hero">
+        <div class="section-eyebrow">FAQ</div>
+        <div class="section-title">الأسئلة <span>الشائعة</span></div>
+        <div class="section-desc" style="max-width:520px;margin:0 auto;">كل ما تريد معرفته عن خدماتنا في مكان واحد</div>
+    </div>
+
+    <div class="faq-categories">
+        <button class="faq-cat-btn active">الكل</button>
+        <button class="faq-cat-btn">الخدمة</button>
+        <button class="faq-cat-btn">التقارير</button>
+        <button class="faq-cat-btn">الأسعار</button>
+        <button class="faq-cat-btn">الأمان</button>
+    </div>
+
+    {% set faqs = [
+        ('ما هو اختبار الاختراق (Penetration Testing)؟', 'اختبار الاختراق هو عملية فحص أمني منهجية يقوم بها خبراء متخصصون لاكتشاف الثغرات الأمنية في الأنظمة والمواقع الإلكترونية قبل أن يستغلها المهاجمون. الهدف هو تحديد نقاط الضعف وتقديم توصيات للإصلاح.'),
+        ('ما هي ثغرة SQL Injection؟', 'ثغرة SQL Injection هي إحدى أخطر الثغرات الأمنية. تحدث عندما يستطيع المهاجم حقن أوامر SQL ضارة في حقول الإدخال لاستغلال قاعدة البيانات وسرقة البيانات أو تعديلها أو حذفها.'),
+        ('كم سعر التقرير الأمني؟', 'سعر التقرير الاحترافي الشامل هو 100 دولار أمريكي فقط. يشمل تقرير PDF جاهز للتسليم، ملف JSON، ملف CSV للبيانات المستخرجة، تقرير Markdown مفصل، وتوصيات أمنية مخصصة.'),
+        ('ما الملفات التي سأحصل عليها؟', 'ستحصل على ملف ZIP يحتوي على: (1) تقرير PDF احترافي جاهز للتسليم. (2) ملف JSON للبيانات البنيوية. (3) ملف CSV للبيانات المستخرجة قابل للفتح في Excel. (4) تقرير Markdown مفصل مع توصيات الإصلاح.'),
+        ('هل أحتاج إلى خبرة تقنية لاستخدام الخدمة؟', 'لا تحتاج أي خبرة تقنية. فقط أرسل لنا رابط الموقع والتفويض الرسمي، وسنقوم بكل شيء من الفحص إلى إعداد التقرير وإرساله لك جاهزاً.'),
+        ('هل الخدمة قانونية؟', 'نعم، خدماتنا قانونية تماماً. نشترط الحصول على تفويض رسمي كتابي من مالك الموقع قبل إجراء أي فحص. نلتزم بالأخلاقيات المهنية والقوانين المعمول بها.'),
+        ('ما مدة تسليم التقرير؟', 'بعد رفع ملف السجل، يتم إنشاء التقرير فورياً وتحميله في ثوانٍ. أما الفحص الكامل للموقع فيستغرق عادةً 24-48 ساعة حسب حجم الموقع وتعقيده.'),
+        ('كيف أحمي موقعي من ثغرات SQL Injection؟', 'أهم الحلول: (1) استخدام Prepared Statements وParameterized Queries. (2) التحقق من صحة جميع مدخلات المستخدم. (3) تفعيل WAF (Web Application Firewall). (4) تطبيق مبدأ Least Privilege لمستخدمي قاعدة البيانات. (5) إجراء اختبارات VAPT دورية.'),
+        ('كيف أتواصل مع الفريق؟', 'يمكنك التواصل معنا مباشرة عبر واتساب على الرقم +967775113425. فريقنا متاح للرد على استفساراتك وتقديم الدعم اللازم.'),
+        ('هل يمكنني رفع أكثر من ملف؟', 'نعم! المنصة تدعم رفع ملفات متعددة. بعد إنشاء حسابك، يمكنك رفع أي عدد من ملفات SQLmap والوصول إلى جميع تقاريرك من لوحة التحكم.')
+    ] %}
+
+    <div class="faq-list">
+        {% for q, a in faqs %}
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">
+                <div class="faq-q-text">{{ q }}</div>
+                <div class="faq-icon">+</div>
+            </div>
+            <div class="faq-a">
+                <div class="faq-a-text">{{ a }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cta-frame section-frame">
+        <div class="frame-label">تواصل معنا</div>
+        <div style="font-size:36px;margin-bottom:14px;">💬</div>
+        <div class="section-title" style="font-size:24px;">لم تجد إجابتك؟</div>
+        <div class="section-desc" style="margin-bottom:24px;">فريقنا جاهز للإجابة على أي سؤال عبر واتساب</div>
+        <a href="/whatsapp" class="btn btn-primary btn-lg">📱 تواصل عبر واتساب</a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleFaq(el) {
+    el.classList.toggle('open');
+}
+</script>
+{% endblock %}

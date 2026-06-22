@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}من نحن — AWR Security Labs{% endblock %}
+{% block description %}AWR Security Labs فريق متخصص في اختبار الاختراق والأمن السيبراني. نقدم خدمات VAPT احترافية لحماية مواقعك وأنظمتك.{% endblock %}
+{% block canonical %}https://awr-security-labs.replit.app/about{% endblock %}
+
+{% block head %}
+<style>
+    .about-hero { text-align: center; padding: 60px 0 48px; }
+    .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 28px; }
+    .team-card {
+        position: relative; background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 18px; padding: 28px; text-align: center;
+        transition: border-color .2s, transform .2s;
+    }
+    .team-card::before, .team-card::after {
+        content: ''; position: absolute; width: 14px; height: 14px; border-style: solid; border-color: var(--accent);
+    }
+    .team-card::before { top: -1px; right: -1px; border-width: 2px 2px 0 0; border-radius: 0 5px 0 0; }
+    .team-card::after  { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; border-radius: 0 0 0 5px; }
+    .team-card:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+    .team-avatar { font-size: 52px; margin-bottom: 14px; }
+    .team-name { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+    .team-role { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+    .team-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    .values-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+    .value-item {
+        display: flex; gap: 14px; align-items: flex-start;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 14px; padding: 20px;
+        transition: border-color .2s;
+    }
+    .value-item:hover { border-color: var(--border-hi); }
+    .value-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+    .value-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .value-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    .tech-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .tech-tag {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px;
+        background: var(--bg-card); border: 1px solid var(--border-md);
+        border-radius: 10px; font-size: 13px; font-weight: 700;
+        color: var(--text-sub); transition: border-color .2s, color .2s;
+    }
+    .tech-tag:hover { border-color: var(--border-hi); color: var(--accent); }
+
+    @media (max-width: 768px) { .team-grid { grid-template-columns: 1fr; } .values-grid { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+    <div class="about-hero">
+        <div class="section-eyebrow">About Us</div>
+        <div class="section-title">من نحن؟<br><span>AWR Security Labs</span></div>
+        <div class="section-desc" style="max-width:580px;margin:0 auto;">
+            فريق متخصص في اختبار الاختراق والأمن السيبراني. نساعد الشركات والأفراد على اكتشاف الثغرات الأمنية وتقديم تقارير احترافية لإصلاحها.
+        </div>
+    </div>
+
+    <!-- Mission -->
+    <div class="section-frame frame-inner" style="margin-bottom:28px;">
+        <div class="frame-label">مهمتنا</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+            <div>
+                <div class="section-eyebrow">Our Mission</div>
+                <div class="section-title" style="font-size:24px;">حماية الفضاء <span>الرقمي العربي</span></div>
+                <div class="section-desc">
+                    نؤمن بأن الأمن السيبراني حق لكل موقع ومؤسسة. مهمتنا تقديم خدمات اختبار اختراق احترافية بأسعار في متناول الجميع، مع تقارير شاملة وواضحة تساعد المطورين والمديرين على فهم المخاطر وإصلاحها.
+                </div>
+                <div style="margin-top:20px;">
+                    <a href="/whatsapp" class="btn btn-primary">📱 تواصل معنا</a>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                {% for item in [('🎯','100+','مشروع مكتمل'),('🌍','10+','دول مخدومة'),('⭐','100%','رضا العملاء'),('🔒','0','تسريب بيانات')] %}
+                <div style="background:var(--bg-card2);border:1px solid var(--border-md);border-radius:14px;padding:20px;text-align:center;">
+                    <div style="font-size:28px;margin-bottom:8px;">{{ item[0] }}</div>
+                    <div style="font-size:22px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ item[1] }}</div>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">{{ item[2] }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Team -->
+    <div style="margin-bottom:28px;">
+        <div style="text-align:center;margin-bottom:24px;">
+            <div class="section-eyebrow">Team</div>
+            <div class="section-title">فريقنا <span>الاحترافي</span></div>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">🧑‍💻</div>
+                <div class="team-name">فريق AWR</div>
+                <div class="team-role">قائد الفريق & مختبر الاختراق</div>
+                <div class="team-desc">خبرة +5 سنوات في اختبار الاختراق وتحليل الثغرات الأمنية واستخراج البيانات</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">🛡️</div>
+                <div class="team-name">محلل الأمن</div>
+                <div class="team-role">Security Analyst</div>
+                <div class="team-desc">متخصص في تحليل السجلات وإعداد التقارير الأمنية الاحترافية</div>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">🔍</div>
+                <div class="team-name">مطور المنصة</div>
+                <div class="team-role">Platform Developer</div>
+                <div class="team-desc">مسؤول عن تطوير وصيانة منصة AWR Security Labs</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Values -->
+    <div class="section-frame" style="margin-bottom:28px;">
+        <div class="frame-label">قيمنا</div>
+        <div style="text-align:center;margin-bottom:24px;">
+            <div class="section-eyebrow">Values</div>
+            <div class="section-title">ما الذي يميزنا؟</div>
+        </div>
+        <div class="values-grid">
+            <div class="value-item">
+                <div class="value-icon">🎯</div>
+                <div><div class="value-title">الدقة والاحترافية</div><div class="value-desc">نستخدم أحدث الأدوات والمنهجيات لضمان دقة نتائج الفحص</div></div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">🔒</div>
+                <div><div class="value-title">السرية التامة</div><div class="value-desc">جميع البيانات والتقارير محمية ولا تُشارك مع أي طرف ثالث</div></div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">⚡</div>
+                <div><div class="value-title">السرعة والكفاءة</div><div class="value-desc">نلتزم بتسليم التقارير في أسرع وقت ممكن دون المساس بالجودة</div></div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon">💬</div>
+                <div><div class="value-title">الدعم المستمر</div><div class="value-desc">فريقنا متاح للإجابة على استفساراتك وتوجيهك في كل خطوة</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="section-frame frame-inner">
+        <div class="frame-label">التقنيات</div>
+        <div style="margin-bottom:20px;">
+            <div class="section-eyebrow">Tech Stack</div>
+            <div class="section-title" style="font-size:22px;">الأدوات التي <span>نستخدمها</span></div>
+        </div>
+        <div class="tech-row">
+            {% for t in [('🔧','SQLmap'),('🐍','Python'),('🌐','Flask'),('📄','FPDF'),('🗄️','SQLite'),('📊','JSON'),('📋','CSV'),('🔐','Werkzeug'),('🐧','Linux'),('☁️','Replit')] %}
+            <div class="tech-tag">{{ t[0] }} {{ t[1] }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

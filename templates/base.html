@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Primary -->
+    <title>{% block title %}AWR Security Labs — اختبار الاختراق والأمن السيبراني{% endblock %}</title>
+    <meta name="description" content="{% block description %}AWR Security Labs — خدمة اختبار الاختراق (VAPT) الاحترافية. كشف ثغرات SQL Injection وتقارير أمنية شاملة بصيغة PDF وJSON وCSV. تواصل معنا الآن.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}اختبار اختراق, فحص ثغرات, sql injection, تقرير أمني, VAPT, أمن سيبراني, AWR Security Labs, penetration testing, cybersecurity{% endblock %}">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="AWR Security Labs">
+    <meta name="language" content="Arabic">
+    <link rel="canonical" href="{% block canonical %}https://awr-security-labs.replit.app/{% endblock %}">
+
+    <!-- Open Graph (Facebook / WhatsApp / LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block og_title %}AWR Security Labs — اختبار الاختراق الاحترافي{% endblock %}">
+    <meta property="og:description" content="{% block og_desc %}كشف ثغرات SQL Injection وتقارير أمنية شاملة. احصل على تقريرك بـ 100$ فقط.{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://awr-security-labs.replit.app/{% endblock %}">
+    <meta property="og:site_name" content="AWR Security Labs">
+    <meta property="og:locale" content="ar_YE">
+    <meta property="og:image" content="https://awr-security-labs.replit.app/static/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AWR Security Labs">
+    <meta name="twitter:description" content="خدمة اختبار الاختراق الاحترافية — تقارير SQL Injection بـ 100$ فقط">
+    <meta name="twitter:image" content="https://awr-security-labs.replit.app/static/og-image.png">
+
+    <!-- Structured Data -->
+    {% block structured_data %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "AWR Security Labs",
+      "description": "خدمة اختبار اختراق احترافية للمواقع الإلكترونية",
+      "url": "https://awr-security-labs.replit.app/",
+      "telephone": "+967775113425",
+      "priceRange": "$100",
+      "areaServed": "Worldwide",
+      "availableLanguage": "Arabic",
+      "serviceType": "Penetration Testing",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+967775113425",
+        "contactType": "customer support",
+        "availableLanguage": "Arabic"
+      }
+    }
+    </script>
+    {% endblock %}
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== RESET & ROOT ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-deep:    #04080f;
+            --bg-dark:    #070d1a;
+            --bg-card:    #0b1422;
+            --bg-card2:   #0f1b2d;
+            --bg-input:   #0d1828;
+            --border:     #162035;
+            --border-md:  #1e2f4a;
+            --border-hi:  rgba(0,210,255,0.3);
+            --accent:     #00d2ff;
+            --accent2:    #7c3aed;
+            --accent3:    #f59e0b;
+            --success:    #10b981;
+            --danger:     #ef4444;
+            --text-main:  #e2e8f0;
+            --text-sub:   #94a3b8;
+            --text-muted: #4a6080;
+            --grad:       linear-gradient(135deg, #00d2ff 0%, #7c3aed 100%);
+            --grad-r:     linear-gradient(135deg, #7c3aed 0%, #00d2ff 100%);
+            --mono:       'JetBrains Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== GRID BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,210,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,210,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== AMBIENT ORBS ===== */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+            animation: orbPulse 10s ease-in-out infinite;
+        }
+        .orb-1 { width: 600px; height: 600px; background: #00d2ff; top: -200px; right: -200px; }
+        .orb-2 { width: 500px; height: 500px; background: #7c3aed; bottom: -150px; left: -150px; animation-delay: 5s; }
+        @keyframes orbPulse {
+            0%, 100% { opacity: 0.08; transform: scale(1); }
+            50%       { opacity: 0.13; transform: scale(1.08); }
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 68px;
+            background: rgba(4, 8, 15, 0.88);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-md);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .nav-logo {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg,rgba(0,210,255,.12),rgba(124,58,237,.12));
+            border: 1px solid var(--border-hi);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(0,210,255,.08);
+        }
+        .nav-text .name {
+            font-size: 15px; font-weight: 900;
+            background: var(--grad);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-text .tagline {
+            font-size: 10px; color: var(--text-muted);
+            letter-spacing: 2.5px; text-transform: uppercase; display: block; line-height: 1;
+        }
+        .nav-links {
+            display: flex; align-items: center; gap: 4px;
+            list-style: none;
+        }
+        .nav-links a {
+            padding: 6px 14px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 14px; font-weight: 500;
+            border-radius: 8px;
+            transition: color .2s, background .2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+            background: rgba(0,210,255,.06);
+        }
+        .nav-right {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer; text-decoration: none;
+            transition: .2s;
+        }
+        .nav-btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-md);
+            color: var(--text-sub);
+        }
+        .nav-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .nav-btn-primary {
+            background: var(--grad);
+            border: none;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0,210,255,.2);
+        }
+        .nav-btn-primary:hover { opacity: .9; box-shadow: 0 6px 24px rgba(0,210,255,.3); }
+        .nav-live {
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            background: rgba(16,185,129,.07);
+            border: 1px solid rgba(16,185,129,.2);
+            border-radius: 20px;
+            color: #34d399; font-size: 12px; font-weight: 700;
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; animation: blink 2s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        /* ===== FLASH MESSAGES ===== */
+        .flash-container { position: relative; z-index: 10; padding: 0 40px; margin-top: 16px; }
+        .flash {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px 18px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; margin-bottom: 10px;
+        }
+        .flash-success { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); color: #34d399; }
+        .flash-danger  { background: rgba(239,68,68,.08);  border: 1px solid rgba(239,68,68,.2);  color: #f87171; }
+        .flash-info    { background: rgba(0,210,255,.08);   border: 1px solid rgba(0,210,255,.2);   color: #67e8f9; }
+        .flash-warning { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.2); color: #fcd34d; }
+
+        /* ===== PAGE WRAPPER ===== */
+        .page-wrap {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+            max-width: 1140px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+        .page-wrap-full {
+            flex: 1; position: relative; z-index: 1;
+        }
+
+        /* ===== SECTION FRAME (إطار القسم) ===== */
+        .section-frame {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-md);
+            border-radius: 20px;
+            padding: 36px;
+            margin-bottom: 28px;
+        }
+        /* Corner brackets */
+        .section-frame::before,
+        .section-frame::after {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            border-color: var(--accent);
+            border-style: solid;
+        }
+        .section-frame::before {
+            top: -1px; right: -1px;
+            border-width: 2px 2px 0 0;
+            border-radius: 0 6px 0 0;
+        }
+        .section-frame::after {
+            bottom: -1px; left: -1px;
+            border-width: 0 0 2px 2px;
+            border-radius: 0 0 0 6px;
+        }
+        /* inner corners via pseudo on child */
+        .frame-inner::before,
+        .frame-inner::after {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            border-color: var(--accent2);
+            border-style: solid;
+        }
+        .frame-inner::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-radius: 6px 0 0 0; }
+        .frame-inner::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-radius: 0 0 6px 0; }
+
+        .frame-label {
+            position: absolute;
+            top: -13px; right: 24px;
+            background: var(--bg-card);
+            padding: 2px 12px;
+            font-size: 11px; font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--border-hi);
+            border-radius: 4px;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-md);
+            border-radius: 16px;
+            padding: 28px;
+            transition: border-color .2s, transform .2s, box-shadow .2s;
+        }
+        .card:hover {
+            border-color: var(--border-hi);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.4);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .ci-blue   { background: rgba(0,210,255,.1);   border: 1px solid rgba(0,210,255,.2); }
+        .ci-purple { background: rgba(124,58,237,.1);  border: 1px solid rgba(124,58,237,.2); }
+        .ci-amber  { background: rgba(245,158,11,.1);  border: 1px solid rgba(245,158,11,.2); }
+        .ci-green  { background: rgba(16,185,129,.1);  border: 1px solid rgba(16,185,129,.2); }
+        .ci-red    { background: rgba(239,68,68,.1);   border: 1px solid rgba(239,68,68,.2); }
+
+        .card-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
+        .card-sub   { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 11px 22px;
+            border-radius: 10px; border: none;
+            font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 700;
+            cursor: pointer; text-decoration: none;
+            transition: .2s;
+        }
+        .btn-primary {
+            background: var(--grad);
+            color: #fff;
+            box-shadow: 0 4px 18px rgba(0,210,255,.2);
+        }
+        .btn-primary:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,210,255,.3); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-md);
+            color: var(--text-sub);
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.2); color: #f87171; }
+        .btn-danger:hover { background: rgba(239,68,68,.18); }
+        .btn-sm { padding: 7px 14px; font-size: 13px; }
+        .btn-full { width: 100%; }
+        .btn-lg { padding: 15px 28px; font-size: 16px; }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block; font-size: 13px; font-weight: 700;
+            color: var(--text-sub); margin-bottom: 8px; letter-spacing: .5px;
+        }
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-md);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif; font-size: 15px;
+            transition: border-color .2s, box-shadow .2s; outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,210,255,.1);
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px; border-radius: 6px;
+            font-size: 12px; font-weight: 700; letter-spacing: .5px;
+        }
+        .badge-blue   { background: rgba(0,210,255,.1); color: var(--accent); border: 1px solid rgba(0,210,255,.2); }
+        .badge-purple { background: rgba(124,58,237,.1); color: #a78bfa; border: 1px solid rgba(124,58,237,.2); }
+        .badge-green  { background: rgba(16,185,129,.1); color: #34d399; border: 1px solid rgba(16,185,129,.2); }
+        .badge-amber  { background: rgba(245,158,11,.1); color: #fcd34d; border: 1px solid rgba(245,158,11,.2); }
+        .badge-red    { background: rgba(239,68,68,.1); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+
+        /* ===== SECTION HEADINGS ===== */
+        .section-eyebrow {
+            font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--accent); font-weight: 800; margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: clamp(22px, 4vw, 32px); font-weight: 900;
+            color: var(--text-main); margin-bottom: 12px; line-height: 1.25;
+        }
+        .section-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-desc { font-size: 15px; color: var(--text-sub); line-height: 1.8; }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-md), transparent);
+            margin: 32px 0;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border-md);
+            background: rgba(4,8,15,.6);
+            backdrop-filter: blur(20px);
+        }
+        .footer-inner {
+            max-width: 1140px; margin: 0 auto;
+            padding: 48px 24px 24px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 36px;
+        }
+        .footer-brand-name {
+            font-size: 18px; font-weight: 900;
+            background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .footer-brand-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+        .footer-col-title  { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 14px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-bottom {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 20px; border-top: 1px solid var(--border);
+            font-size: 12px; color: var(--text-muted);
+            flex-wrap: wrap; gap: 10px;
+        }
+        .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            display: none; width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-top-color: #fff; border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .navbar { padding: 0 20px; }
+            .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .page-wrap { padding: 32px 16px 48px; }
+        }
+        @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .flash-container { padding: 0 16px; }
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="/" class="nav-brand">
+        <div class="nav-logo">🛡️</div>
+        <div class="nav-text">
+            <div class="name">AWR Security Labs</div>
+            <span class="tagline">Cybersecurity Platform</span>
+        </div>
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="/" class="{{ 'active' if request.path == '/' }}">الرئيسية</a></li>
+        <li><a href="/about" class="{{ 'active' if request.path == '/about' }}">من نحن</a></li>
+        <li><a href="/faq" class="{{ 'active' if request.path == '/faq' }}">الأسئلة</a></li>
+        <li><a href="/blog" class="{{ 'active' if request.path == '/blog' }}">المدونة</a></li>
+    </ul>
+
+    <div class="nav-right">
+        {% if session.get('user_id') %}
+            <div class="nav-live"><div class="dot"></div>{{ session.username }}</div>
+            <a href="/dashboard" class="nav-btn nav-btn-outline">لوحة التحكم</a>
+            <a href="/logout" class="nav-btn nav-btn-primary">خروج</a>
+        {% else %}
+            <a href="/login" class="nav-btn nav-btn-outline">دخول</a>
+            <a href="/register" class="nav-btn nav-btn-primary">ابدأ الآن</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+    {% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">
+        {% if cat == 'success' %}✅{% elif cat == 'danger' %}⚠️{% elif cat == 'info' %}ℹ️{% else %}🔔{% endif %}
+        {{ msg }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- PAGE CONTENT -->
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand-name">🛡️ AWR Security Labs</div>
+                <div class="footer-brand-desc">منصة اختبار الاختراق والأمن السيبراني الاحترافية. نكتشف الثغرات ونقدم تقارير شاملة لحماية مواقعك.</div>
+                <div style="margin-top:16px;">
+                    <a href="/whatsapp" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);border-radius:10px;color:#4ade80;text-decoration:none;font-size:13px;font-weight:700;">
+                        📱 واتساب +967775113425
+                    </a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">الخدمات</div>
+                <ul class="footer-links">
+                    <li><a href="/#upload-section">تحليل السجلات</a></li>
+                    <li><a href="/#features">الميزات</a></li>
+                    <li><a href="/whatsapp">اطلب فحصاً</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">روابط</div>
+                <ul class="footer-links">
+                    <li><a href="/about">من نحن</a></li>
+                    <li><a href="/faq">الأسئلة الشائعة</a></li>
+                    <li><a href="/blog">المدونة</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">الحساب</div>
+                <ul class="footer-links">
+                    <li><a href="/register">إنشاء حساب</a></li>
+                    <li><a href="/login">تسجيل الدخول</a></li>
+                    <li><a href="/dashboard">لوحة التحكم</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 AWR Security Labs — جميع الحقوق محفوظة</span>
+            <span>صُمم بـ ❤️ للأمن السيبراني العربي</span>
+        </div>
+    </div>
+</footer>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

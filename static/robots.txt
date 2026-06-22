@@ -1,3 +1,14 @@
 User-agent: *
 Allow: /
-Sitemap: https://your-domain.com/sitemap.xml
+Allow: /about
+Allow: /faq
+Allow: /blog
+Allow: /register
+Allow: /login
+
+Disallow: /dashboard
+Disallow: /upload
+Disallow: /download/
+Disallow: /logout
+
+Sitemap: https://awr-security-labs.replit.app/sitemap.xml
