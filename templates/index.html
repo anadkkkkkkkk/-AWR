@@ -3,114 +3,840 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- ===== SEO الأساسي ===== -->
-    <title>اختبار اختراق المواقع | AWR Security Labs - تقرير احترافي 100$</title>
-    <meta name="description" content="خدمة اختبار اختراق (VAPT) للمواقع الإلكترونية. احصل على تقرير مفصل (PDF, JSON, CSV) يحتوي على الثغرات المكتشفة وتوصيات الإصلاح. السعر 100 دولار فقط.">
-    <meta name="keywords" content="اختبار اختراق, فحص ثغرات, sql injection, تقرير أمني, VAPT, أمن سيبراني, AWR Security Labs">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://your-domain.com/">
-
-    <!-- ===== بيانات منظمة (عشان تظهر في نتائج البحث بشكل مميز) ===== -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      "name": "AWR Security Labs",
-      "description": "خدمة اختبار اختراق للمواقع الإلكترونية مع تقارير احترافية",
-      "priceRange": "$100",
-      "telephone": "+967775113425",
-      "url": "https://your-domain.com/"
-    }
-    </script>
-
+    <title>AWR Security Labs — لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* (نفس التصميم السابق مع بعض التعديلات البسيطة) */
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0b0f1c 0%, #1a233a 50%, #0d1117 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8); border-radius: 24px; padding: 40px 50px; max-width: 750px; width: 90%; text-align: center; transition: transform 0.3s ease; }
-        .container:hover { transform: scale(1.01); }
-        .logo { font-size: 2.8em; font-weight: 900; background: linear-gradient(90deg, #00f0ff, #7b2ffc, #00f0ff); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease infinite; }
-        .logo-sub { font-size: 0.8em; color: #8892b0; letter-spacing: 4px; margin-top: -5px; display: block; -webkit-text-fill-color: #8892b0; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .price-tag { background: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); padding: 10px 20px; border-radius: 50px; display: inline-block; margin: 15px 0; color: #ffd700; font-weight: bold; font-size: 1.4em; }
-        .desc { color: #ccd6f6; font-size: 1.1em; line-height: 1.8; }
-        
-        /* قسم التعليمات */
-        .instructions { background: rgba(0, 0, 0, 0.3); border-radius: 16px; padding: 20px; margin: 20px 0; text-align: right; border-right: 4px solid #00f0ff; }
-        .instructions h3 { color: #00f0ff; margin-top: 0; }
-        .instructions ul { color: #ccd6f6; list-style: none; padding: 0; }
-        .instructions li { margin-bottom: 12px; padding-right: 25px; position: relative; font-size: 0.95em; }
-        .instructions li::before { content: "⚡"; position: absolute; right: 0; color: #7b2ffc; }
-        .instructions .highlight { color: #ffd700; font-weight: bold; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ===== قسم الأسئلة الشائعة (FAQ) لتحسين SEO ===== */
-        .faq-section { margin-top: 30px; text-align: right; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .faq-section h3 { color: #00f0ff; font-size: 1.3em; margin-bottom: 15px; }
-        .faq-item { margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
-        .faq-item h4 { color: #ffd700; margin: 0 0 5px 0; font-size: 1.05em; }
-        .faq-item p { color: #ccd6f6; margin: 0; font-size: 0.95em; line-height: 1.6; }
+        :root {
+            --bg-deep: #060a12;
+            --bg-card: #0d1421;
+            --bg-card2: #101827;
+            --bg-input: #111827;
+            --border: #1e2d45;
+            --border-glow: rgba(0,210,255,0.2);
+            --accent: #00d2ff;
+            --accent2: #7c3aed;
+            --accent3: #f59e0b;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --text-sub: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #7c3aed 100%);
+        }
 
-        .file-input-wrapper { background: rgba(0, 0, 0, 0.3); border: 2px dashed #4a5b7a; border-radius: 16px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
-        .file-input-wrapper:hover { border-color: #00f0ff; }
-        input[type="file"] { color: #ccd6f6; width: 100%; padding: 10px; cursor: pointer; }
-        ::-webkit-file-upload-button { background: #1a233a; border: 1px solid #4a5b7a; color: #ccd6f6; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
-        ::-webkit-file-upload-button:hover { background: #2a3a5a; border-color: #00f0ff; }
-        .btn-submit { background: linear-gradient(90deg, #00f0ff, #7b2ffc); border: none; color: #fff; padding: 15px 40px; border-radius: 50px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(123, 47, 252, 0.4); }
-        .footer { margin-top: 30px; color: #495670; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.9em; }
-        .footer strong { color: #00f0ff; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,210,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,210,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            background: rgba(6, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, rgba(0,210,255,0.15), rgba(124,58,237,0.15));
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .nav-name {
+            font-size: 16px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-tagline {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: block;
+            line-height: 1;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 20px;
+            color: #34d399;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: blink 2s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 10px;
+            color: #f87171;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.15); }
+
+        /* ===== MAIN LAYOUT ===== */
+        .main {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* ===== HERO HEADER ===== */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(0,210,255,0.06);
+            border: 1px solid rgba(0,210,255,0.15);
+            border-radius: 20px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--text-main);
+            margin-bottom: 14px;
+        }
+        .hero h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 16px;
+            color: var(--text-sub);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ===== STATS ROW ===== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .stat-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .stat-value {
+            font-size: 26px;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ===== MAIN GRID ===== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* ===== UPLOAD CARD ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .icon-blue { background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.2); }
+        .icon-purple { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); }
+        .icon-amber { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
+        .icon-green { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
+
+        .card-title-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .card-sub-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Drop zone */
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(0,210,255,0.03);
+        }
+        .drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .drop-icon { font-size: 36px; margin-bottom: 12px; }
+        .drop-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+        .drop-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .drop-types {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        .type-badge {
+            padding: 3px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .file-selected {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(0,210,255,0.06);
+            border: 1px solid rgba(0,210,255,0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-size: 14px;
+        }
+        .file-selected.show { display: flex; }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0,210,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(0,210,255,0.3);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Loading */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== SIDEBAR CARDS ===== */
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 0;
+        }
+        .steps-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .step-text {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.7;
+        }
+        .step-text strong { color: var(--text-main); }
+
+        /* Pricing box */
+        .price-box {
+            background: linear-gradient(135deg, rgba(0,210,255,0.06), rgba(124,58,237,0.06));
+            border: 1px solid rgba(0,210,255,0.15);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .price-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+        .price-value { font-size: 32px; font-weight: 900; color: var(--accent3); }
+        .price-note { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+        /* ===== FEATURES GRID ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .feature-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+        }
+        .feature-emoji { font-size: 24px; margin-bottom: 10px; }
+        .feature-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+        /* ===== FAQ ===== */
+        .faq-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .section-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 24px;
+        }
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .faq-item {
+            background: var(--bg-card2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+        .faq-item:hover { border-color: var(--border-glow); }
+        .faq-q {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .faq-a { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer-brand {
+            font-size: 15px;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        /* ===== ALERT ===== */
+        .alert {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 16px;
+            font-weight: 500;
+        }
+        .alert.show { display: flex; }
+        .alert-error {
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            color: #f87171;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(3, 1fr); }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .faq-grid { grid-template-columns: 1fr; }
+            .navbar { padding: 0 16px; }
+            .main { padding: 24px 16px 40px; }
+        }
+        @media (max-width: 480px) {
+            .stats-row { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- الشعار -->
-        <div class="logo">🛡️ AWR Security Labs</div>
-        <span class="logo-sub">✦ اختبار الاختراق & الأمن السيبراني ✦</span>
 
-        <div class="price-tag">💰 السعر: 100$ فقط (تقرير احترافي شامل)</div>
-
-        <!-- تعليمات العميل -->
-        <div class="instructions">
-            <h3>📋 كيف تعمل الخدمة؟</h3>
-            <ul>
-                <li><strong>الخطوة 1:</strong> أرسل لي <span class="highlight">رابط الصفحة</span> التي تريد فحصها (مثل <code style="color:#00f0ff;">example.com?id=1</code>).</li>
-                <li><strong>الخطوة 2:</strong> أرسل <span class="highlight">تفويضاً كتابياً</span> (إيميل رسمي).</li>
-                <li><strong>الخطوة 3:</strong> سأقوم بالفحص واستخراج البيانات.</li>
-                <li><strong>الخطوة 4:</strong> ستحصل على <span class="highlight">التقارير التالية</span>: MD · JSON · CSV (جاهزة للتسليم).</li>
-            </ul>
-        </div>
-
-        <div class="desc">
-            🔽 ارفع ملف السجل (SQLmap Log) لتحصل على تقريرك فوراً
-        </div>
-
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <div class="file-input-wrapper">
-                <input type="file" name="logfile" accept=".log,.txt" required>
-            </div>
-            <button type="submit" class="btn-submit">🚀 إنشاء التقرير</button>
-        </form>
-
-        <!-- ===== قسم الأسئلة الشائعة (لجذب البحث في جوجل) ===== -->
-        <div class="faq-section">
-            <h3>❓ الأسئلة الشائعة (FAQ)</h3>
-            <div class="faq-item">
-                <h4>ما هو اختبار الاختراق (VAPT)؟</h4>
-                <p>هو عملية فحص أمني يكتشف من خلالها الثغرات في موقعك الإلكتروني، مثل ثغرة حقن SQL، ويقدم لك تقريراً مفصلاً لإصلاحها.</p>
-            </div>
-            <div class="faq-item">
-                <h4>كم سعر التقرير؟</h4>
-                <p>سعر التقرير الاحترافي هو <strong>100 دولار أمريكي</strong> فقط، شامل جميع التفاصيل والتوصيات.</p>
-            </div>
-            <div class="faq-item">
-                <h4>هل أحتاج إلى خبرة تقنية للاستفادة من الخدمة؟</h4>
-                <p>لا، أنت فقط ترسل لي رابط موقعك وتفويضاً، وأنا أقوم بكل شيء وأرسل لك التقرير الجاهز.</p>
-            </div>
-        </div>
-
-        <div class="footer">
-            📞 للتواصل واتساب: <strong>+967775113425</strong>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-brand">
+        <div class="nav-logo">🛡️</div>
+        <div>
+            <div class="nav-name">AWR Security Labs</div>
+            <span class="nav-tagline">Penetration Testing Platform</span>
         </div>
     </div>
+    <div class="nav-actions">
+        <div class="nav-badge">
+            <div class="dot-live"></div>
+            نشط
+        </div>
+        <a href="/logout" class="btn-logout">
+            <span>⏏</span> خروج
+        </a>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">
+            <span>⚡</span>
+            منصة تقارير الأمن السيبراني الاحترافية
+        </div>
+        <h1>
+            اكتشف الثغرات،<br>
+            <span>احصل على تقريرك فوراً</span>
+        </h1>
+        <p>ارفع ملف السجل من SQLmap وستحصل على تقرير شامل جاهز للتسليم في ثوانٍ.</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">JSON</div>
+            <div class="stat-label">تقرير منظم</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">CSV</div>
+            <div class="stat-label">بيانات مستخرجة</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value">MD</div>
+            <div class="stat-label">تقرير مفصل</div>
+        </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid-2">
+
+        <!-- Upload Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon icon-blue">📤</div>
+                <div>
+                    <div class="card-title-text">رفع ملف السجل</div>
+                    <div class="card-sub-text">ملفات SQLmap (.log / .txt)</div>
+                </div>
+            </div>
+
+            <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" name="logfile" id="fileInput" accept=".log,.txt" required>
+                    <div class="drop-icon">📁</div>
+                    <div class="drop-title">اسحب الملف هنا أو انقر للاختيار</div>
+                    <div class="drop-sub">الملفات المدعومة</div>
+                    <div class="drop-types">
+                        <span class="type-badge">.log</span>
+                        <span class="type-badge">.txt</span>
+                    </div>
+                </div>
+
+                <div class="file-selected" id="fileSelected">
+                    <span>✅</span>
+                    <span id="fileName">—</span>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <span id="btnText">🚀 إنشاء التقرير الآن</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+
+                <div class="alert alert-error" id="errorAlert">
+                    <span>⚠️</span>
+                    <span id="errorText">حدث خطأ أثناء المعالجة</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+
+            <!-- Steps -->
+            <div class="info-card">
+                <div class="card-header" style="margin-bottom: 20px; padding-bottom: 16px;">
+                    <div class="card-icon icon-purple">📋</div>
+                    <div>
+                        <div class="card-title-text">كيف تعمل الخدمة؟</div>
+                        <div class="card-sub-text">خطوات بسيطة وسريعة</div>
+                    </div>
+                </div>
+                <ul class="steps-list">
+                    <li class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-text">أرسل <strong>رابط الصفحة</strong> المطلوب فحصها مثل <code style="color:var(--accent);background:rgba(0,210,255,0.08);padding:2px 6px;border-radius:4px;font-size:12px;">example.com?id=1</code></div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-text">أرسل <strong>تفويضاً كتابياً</strong> رسمياً لإجراء الفحص</div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-text">نقوم بالفحص واستخراج البيانات باستخدام <strong>SQLmap</strong></div>
+                    </li>
+                    <li class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-text">ارفع ملف السجل هنا وستحصل على <strong>تقريرك فوراً</strong></div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Price -->
+            <div class="info-card">
+                <div class="card-header" style="margin-bottom: 16px; padding-bottom: 16px;">
+                    <div class="card-icon icon-amber">💰</div>
+                    <div>
+                        <div class="card-title-text">التسعيرة</div>
+                        <div class="card-sub-text">تقرير احترافي شامل</div>
+                    </div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">سعر التقرير</div>
+                    <div class="price-value">$100</div>
+                    <div class="price-note">شامل JSON · CSV · MD + التوصيات</div>
+                </div>
+                <div style="margin-top: 16px; padding: 14px; background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.15); border-radius: 12px; text-align:center;">
+                    <div style="color:#34d399; font-size: 13px; font-weight: 600; margin-bottom: 4px;">📞 واتساب للتواصل</div>
+                    <div style="color: var(--text-sub); font-size: 14px; font-weight: 700;">+967775113425</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-emoji">🔍</div>
+            <div class="feature-name">كشف DBMS تلقائي</div>
+            <div class="feature-desc">يكتشف نوع قاعدة البيانات تلقائياً من سجل SQLmap</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-emoji">📊</div>
+            <div class="feature-name">تقرير JSON منظم</div>
+            <div class="feature-desc">بيانات مهيكلة قابلة للقراءة برمجياً</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-emoji">📋</div>
+            <div class="feature-name">ملف CSV للبيانات</div>
+            <div class="feature-desc">بيانات مستخرجة جاهزة للاستيراد في Excel</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-emoji">🛡️</div>
+            <div class="feature-name">توصيات أمنية</div>
+            <div class="feature-desc">توصيات مخصصة حسب نوع قاعدة البيانات</div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-card">
+        <div class="section-label">FAQ</div>
+        <div class="section-title">الأسئلة الشائعة</div>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <div class="faq-q"><span>🔒</span> ما هو اختبار الاختراق (VAPT)؟</div>
+                <div class="faq-a">عملية فحص أمني منهجية لاكتشاف الثغرات في الأنظمة والمواقع، مثل ثغرة SQL Injection، مع تقديم تقرير مفصل للإصلاح.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q"><span>💰</span> ما سعر التقرير؟</div>
+                <div class="faq-a">سعر التقرير الاحترافي الشامل هو <strong style="color:var(--accent3)">$100 فقط</strong>، يتضمن جميع التفاصيل والتوصيات الأمنية.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q"><span>📁</span> ما هي الملفات التي سأحصل عليها؟</div>
+                <div class="faq-a">ستحصل على ملف ZIP يحتوي: تقرير Markdown مفصل، ملف JSON للبيانات، وملف CSV للبيانات المستخرجة.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q"><span>⚡</span> هل أحتاج خبرة تقنية؟</div>
+                <div class="faq-a">لا، فقط أرسل رابط الموقع والتفويض الرسمي، وسنقوم بكل شيء ونرسل لك التقرير الجاهز.</div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">AWR Security Labs</div>
+    <div>منصة تقارير الأمن السيبراني الاحترافية — جميع الحقوق محفوظة © 2025</div>
+    <div style="margin-top:8px;">للتواصل: <a href="https://wa.me/967775113425">واتساب +967775113425</a></div>
+</footer>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileSelected = document.getElementById('fileSelected');
+    const fileName = document.getElementById('fileName');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const spinner = document.getElementById('spinner');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorText = document.getElementById('errorText');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileName.textContent = fileInput.files[0].name;
+            fileSelected.classList.add('show');
+        }
+    });
+
+    ['dragover', 'dragenter'].forEach(evt => {
+        dropZone.addEventListener(evt, e => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+        dropZone.addEventListener(evt, e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+        });
+    });
+    dropZone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileName.textContent = files[0].name;
+            fileSelected.classList.add('show');
+        }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        if (!fileInput.files.length) return;
+        submitBtn.disabled = true;
+        btnText.textContent = 'جارٍ المعالجة...';
+        spinner.style.display = 'block';
+        errorAlert.classList.remove('show');
+
+        const formData = new FormData(this);
+        e.preventDefault();
+
+        fetch('/upload', { method: 'POST', body: formData })
+            .then(async res => {
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    throw new Error(data.error || 'حدث خطأ أثناء المعالجة');
+                }
+                return res.blob();
+            })
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'report.zip';
+                a.click();
+                URL.revokeObjectURL(url);
+            })
+            .catch(err => {
+                errorText.textContent = err.message;
+                errorAlert.classList.add('show');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                btnText.textContent = '🚀 إنشاء التقرير الآن';
+                spinner.style.display = 'none';
+            });
+    });
+</script>
+
 </body>
 </html>

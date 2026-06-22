@@ -3,87 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - AWR Security Labs</title>
+    <title>AWR Security Labs — تسجيل الدخول</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-deep: #060a12;
+            --bg-card: #0d1421;
+            --bg-input: #111827;
+            --border: #1e2d45;
+            --border-glow: rgba(0, 210, 255, 0.25);
+            --accent: #00d2ff;
+            --accent2: #7c3aed;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --text-sub: #94a3b8;
+            --error: #ef4444;
+            --success: #10b981;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #7c3aed 100%);
+        }
+
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0b0f1c 0%, #1a233a 50%, #0d1117 100%);
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg-deep);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-            border-radius: 24px;
-            padding: 40px 50px;
+
+        /* Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,210,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,210,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* Glow orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        .orb-1 { width: 500px; height: 500px; background: #00d2ff; top: -150px; left: -150px; }
+        .orb-2 { width: 400px; height: 400px; background: #7c3aed; bottom: -100px; right: -100px; animation-delay: 4s; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.12; transform: scale(1); }
+            50% { opacity: 0.18; transform: scale(1.05); }
+        }
+
+        .login-wrapper {
+            width: 100%;
             max-width: 420px;
-            width: 90%;
-            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
-        .logo {
-            font-size: 2.5em;
+
+        /* Brand */
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(0,210,255,0.15), rgba(124,58,237,0.15));
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            font-size: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 0 40px rgba(0,210,255,0.1);
+        }
+        .brand-name {
+            font-size: 22px;
             font-weight: 900;
-            background: linear-gradient(90deg, #00f0ff, #7b2ffc);
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
         }
-        .logo-sub { color: #8892b0; font-size: 0.8em; -webkit-text-fill-color: #8892b0; margin-top: -5px; display: block; }
-        .desc { color: #ccd6f6; margin: 20px 0; }
-        input[type="password"] {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #4a5b7a;
+        .brand-tagline {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+        .card-sub {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+
+        /* Form */
+        .field {
+            margin-bottom: 20px;
+        }
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap .icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .field input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 15px;
-            width: 85%;
-            color: #fff;
-            font-size: 1em;
-            transition: 0.3s;
-            margin-bottom: 15px;
-        }
-        input[type="password"]:focus {
-            border-color: #00f0ff;
+            padding: 13px 44px 13px 16px;
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.2s, box-shadow 0.2s;
             outline: none;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
         }
-        .btn-login {
-            background: linear-gradient(90deg, #00f0ff, #7b2ffc);
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
+        }
+        .field input::placeholder { color: var(--text-muted); }
+
+        /* Error */
+        .error-msg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #f87171;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            background: var(--gradient);
             border: none;
+            border-radius: 12px;
+            padding: 14px;
             color: #fff;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2em;
-            font-weight: bold;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
-            width: 85%;
-            transition: 0.3s;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 210, 255, 0.2);
         }
-        .btn-login:hover { transform: scale(1.02); box-shadow: 0 10px 25px rgba(123, 47, 252, 0.4); }
-        .error { color: #ff4757; margin-top: 10px; background: rgba(255, 71, 87, 0.1); padding: 10px; border-radius: 8px; }
-        .footer { margin-top: 20px; color: #495670; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.9em; }
-        .footer strong { color: #00f0ff; }
+        .btn-primary:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(0, 210, 255, 0.3);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        /* Security badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+            padding: 8px 14px;
+            background: rgba(16,185,129,0.06);
+            border: 1px solid rgba(16,185,129,0.15);
+            border-radius: 8px;
+            color: #34d399;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🛡️ AWR Security</div>
-        <span class="logo-sub">✦ ACCESS CONTROL ✦</span>
-        <div class="desc">🔑 أدخل كلمة المرور للوصول إلى المنصة</div>
-        <form method="post">
-            <input type="password" name="password" placeholder="••••••••" required>
-            <br>
-            <button type="submit" class="btn-login">دخول</button>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="login-wrapper">
+        <div class="brand">
+            <div class="brand-icon">🛡️</div>
+            <div class="brand-name">AWR Security Labs</div>
+            <div class="brand-tagline">Penetration Testing & Forensics</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">تسجيل الدخول</div>
+            <div class="card-sub">أدخل كلمة المرور للوصول إلى لوحة التحكم</div>
+
             {% if error %}
-                <p class="error">{{ error }}</p>
+            <div class="error-msg">
+                <span>⚠️</span>
+                <span>{{ error }}</span>
+            </div>
             {% endif %}
-        </form>
-        <div class="footer">📞 للتواصل: <strong>+967775113425</strong></div>
+
+            <form method="post">
+                <div class="field">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrap">
+                        <span class="icon">🔑</span>
+                        <input type="password" name="password" placeholder="أدخل كلمة المرور..." required autofocus>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">دخول إلى المنصة</button>
+            </form>
+
+            <div class="security-badge">
+                <span>🔒</span>
+                <span>اتصال آمن ومشفر — SSL/TLS Protected</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            للدعم الفني: <a href="https://wa.me/967775113425">واتساب +967775113425</a>
+        </div>
     </div>
 </body>
 </html>
