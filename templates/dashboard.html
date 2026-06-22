@@ -61,6 +61,42 @@
     .empty-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
     .empty-desc { font-size: 13px; color: var(--text-muted); }
 
+    /* Paywall */
+    .paywall {
+        background: linear-gradient(135deg, rgba(239,68,68,.06), rgba(124,58,237,.06));
+        border: 1px solid rgba(239,68,68,.2);
+        border-radius: 18px; padding: 36px 28px; text-align: center; margin-bottom: 28px;
+        position: relative; overflow: hidden;
+    }
+    .paywall::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: linear-gradient(90deg, #ef4444, #7c3aed);
+    }
+    .paywall-icon { font-size: 52px; margin-bottom: 14px; }
+    .paywall-title { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
+    .paywall-title span { color: #f87171; }
+    .paywall-desc { font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; max-width: 420px; margin-inline: auto; }
+    .paywall-steps { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .paywall-step {
+        display: flex; align-items: flex-start; gap: 10px;
+        background: rgba(255,255,255,.03); border: 1px solid var(--border);
+        border-radius: 12px; padding: 14px 18px; min-width: 140px; text-align: right;
+    }
+    .step-num { font-size: 20px; font-weight: 900; color: var(--accent); min-width: 28px; }
+    .step-txt { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+    .paywall-price { font-size: 36px; font-weight: 900; background: linear-gradient(135deg,#f59e0b,#ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+    .paywall-price-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .lock-overlay {
+        position: relative;
+    }
+    .lock-overlay::after {
+        content: '🔒 يتطلب دفعاً';
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 700; color: #f87171;
+        background: rgba(4,8,15,.65); border-radius: 14px; backdrop-filter: blur(4px);
+        border: 1px dashed rgba(239,68,68,.3);
+    }
+
     @media (max-width: 900px) {
         .dash-grid { grid-template-columns: 1fr; }
         .dash-stats { grid-template-columns: repeat(3,1fr); }
@@ -76,10 +112,56 @@
     <div class="dash-header">
         <div>
             <div class="dash-welcome">مرحباً، <span>{{ session.username }}</span> 👋</div>
-            <div class="dash-sub">إدارة تقاريرك الأمنية من مكان واحد</div>
+            <div class="dash-sub">
+                {% if is_paid %}
+                ✅ حسابك مفعّل — لديك وصول كامل للمنصة
+                {% else %}
+                ⚠️ حسابك في انتظار التفعيل — يرجى إتمام الدفع
+                {% endif %}
+            </div>
         </div>
-        <a href="/whatsapp" class="btn btn-outline">📱 طلب فحص جديد</a>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            {% if is_paid %}
+            <a href="/whatsapp" class="btn btn-outline">📱 طلب فحص جديد</a>
+            {% else %}
+            <a href="/activate-whatsapp" class="btn btn-primary">💳 تفعيل الحساب الآن</a>
+            {% endif %}
+        </div>
     </div>
+
+    <!-- Paywall Banner (unpaid only) -->
+    {% if not is_paid %}
+    <div class="paywall">
+        <div class="paywall-icon">🔐</div>
+        <div class="paywall-title">حسابك <span>غير مفعّل</span></div>
+        <div class="paywall-desc">
+            لرفع ملفات SQLmap وتحميل التقارير الأمنية، يجب إتمام الدفع أولاً.
+            بعد التحقق من الدفع، يتم تفعيل حسابك فوراً.
+        </div>
+
+        <div class="paywall-steps">
+            <div class="paywall-step">
+                <div class="step-num">1</div>
+                <div class="step-txt">تواصل معنا على واتساب</div>
+            </div>
+            <div class="paywall-step">
+                <div class="step-num">2</div>
+                <div class="step-txt">ادفع رسوم الخدمة</div>
+            </div>
+            <div class="paywall-step">
+                <div class="step-num">3</div>
+                <div class="step-txt">يتم تفعيل حسابك فوراً</div>
+            </div>
+        </div>
+
+        <div class="paywall-price">$100</div>
+        <div class="paywall-price-sub">لكل تقرير اختراق شامل (PDF + JSON + CSV + MD)</div>
+
+        <a href="/activate-whatsapp" class="btn btn-primary btn-lg" style="margin-inline:auto;display:inline-flex;gap:8px;">
+            📱 تواصل الآن لتفعيل الحساب
+        </a>
+    </div>
+    {% endif %}
 
     <!-- Stats -->
     <div class="dash-stats">
@@ -89,9 +171,9 @@
             <div class="ds-label">إجمالي التقارير</div>
         </div>
         <div class="dash-stat">
-            <div class="ds-icon">📤</div>
-            <div class="ds-val">∞</div>
-            <div class="ds-label">تحميلات غير محدودة</div>
+            <div class="ds-icon">{% if is_paid %}✅{% else %}🔒{% endif %}</div>
+            <div class="ds-val">{% if is_paid %}مفعّل{% else %}معلّق{% endif %}</div>
+            <div class="ds-label">حالة الحساب</div>
         </div>
         <div class="dash-stat">
             <div class="ds-icon">🛡️</div>
@@ -136,7 +218,11 @@
                             </td>
                             <td class="td-date">{{ r[3][:16] if r[3] else '—' }}</td>
                             <td>
+                                {% if is_paid %}
                                 <a href="/download/{{ r[0] }}" class="btn btn-sm btn-primary">⬇ ZIP</a>
+                                {% else %}
+                                <span class="btn btn-sm" style="background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);cursor:not-allowed;">🔒 مقفل</span>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -147,13 +233,22 @@
             <div class="empty-state">
                 <div class="empty-icon">📭</div>
                 <div class="empty-title">لا توجد تقارير بعد</div>
-                <div class="empty-desc">ارفع أول ملف SQLmap للبدء في تحليله</div>
+                <div class="empty-desc">
+                    {% if is_paid %}
+                    ارفع أول ملف SQLmap للبدء في تحليله
+                    {% else %}
+                    فعّل حسابك أولاً ثم ارفع ملفاتك
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
         </div>
 
         <!-- Upload Sidebar -->
         <div style="display:flex;flex-direction:column;gap:20px;">
+
+            {% if is_paid %}
+            <!-- Paid: show upload form -->
             <div class="section-frame" style="padding:24px;">
                 <div class="frame-label">رفع ملف</div>
                 <div class="card-header">
@@ -178,24 +273,42 @@
                     </button>
                 </form>
             </div>
+            {% else %}
+            <!-- Unpaid: locked upload -->
+            <div class="section-frame" style="padding:24px;">
+                <div class="frame-label">رفع ملف</div>
+                <div class="lock-overlay" style="border-radius:14px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:.6;pointer-events:none;padding:24px;">
+                    <div style="font-size:36px;">📤</div>
+                    <div style="font-size:14px;font-weight:700;color:var(--text-main);">رفع سجل SQLmap</div>
+                    <div style="font-size:12px;color:var(--text-muted);">.log أو .txt</div>
+                </div>
+            </div>
+            {% endif %}
 
-            <!-- Info -->
+            <!-- Info / Output formats -->
             <div class="section-frame" style="padding:22px;">
                 <div class="frame-label">مخرجات التقرير</div>
                 <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
                     {% for item in [('📄','PDF','تقرير احترافي جاهز'),('📊','JSON','بيانات بنيوية'),('📋','CSV','جداول البيانات'),('📝','MD','تقرير نصي مفصل')] %}
-                    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;{% if not is_paid %}opacity:.5;{% endif %}">
                         <span style="font-size:18px;">{{ item[0] }}</span>
                         <span style="font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;min-width:36px;">{{ item[1] }}</span>
                         <span style="font-size:13px;color:var(--text-muted);">{{ item[2] }}</span>
+                        {% if not is_paid %}<span style="margin-right:auto;font-size:11px;">🔒</span>{% endif %}
                     </div>
                     {% endfor %}
                 </div>
             </div>
 
+            {% if is_paid %}
             <a href="/whatsapp" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:14px;color:#4ade80;text-decoration:none;font-size:14px;font-weight:700;">
                 📱 طلب فحص جديد عبر واتساب
             </a>
+            {% else %}
+            <a href="/activate-whatsapp" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:14px;color:#fbbf24;text-decoration:none;font-size:14px;font-weight:700;">
+                💳 تواصل لإتمام الدفع وتفعيل الحساب
+            </a>
+            {% endif %}
         </div>
 
     </div>
@@ -204,6 +317,7 @@
 
 {% block scripts %}
 <script>
+    {% if is_paid %}
     const dz = document.getElementById('dropZone');
     const fi = document.getElementById('fileInput');
     const fc = document.getElementById('fileChosen');
@@ -217,5 +331,6 @@
     ['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('drag-over');}));
     dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files; if(f.length){fi.files=f;cn.textContent=f[0].name;fc.classList.add('show');} });
     document.getElementById('uploadForm').addEventListener('submit',()=>{ sb.disabled=true; bt.textContent='جارٍ الرفع...'; sp.style.display='block'; });
+    {% endif %}
 </script>
 {% endblock %}

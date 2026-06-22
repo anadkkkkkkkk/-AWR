@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}لوحة الأدمن — AWR Security Labs{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block head %}
+<style>
+.adm-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+.adm-title { font-size: 28px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
+.adm-title span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.adm-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.stat-box { background: var(--bg-card); border: 1px solid var(--border-md); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; }
+.stat-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--grad); }
+.stat-icon { font-size: 22px; margin-bottom: 8px; }
+.stat-val { font-size: 30px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-lbl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.section-card { background: var(--bg-card); border: 1px solid var(--border-md); border-radius: 16px; margin-bottom: 28px; overflow: hidden; }
+.card-head { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.card-head-title { font-size: 15px; font-weight: 800; color: var(--text-main); }
+.card-head-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { text-align: right; padding: 11px 16px; font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody td { padding: 13px 16px; border-bottom: 1px solid var(--border); color: var(--text-sub); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(0,210,255,.03); }
+
+.badge-paid { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-paid.yes { background: rgba(34,197,94,.12); color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+.badge-paid.no  { background: rgba(239,68,68,.10); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+.badge-admin { display: inline-flex; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; background: rgba(124,58,237,.15); color: #a78bfa; border: 1px solid rgba(124,58,237,.25); }
+
+.btn-xs { padding: 5px 12px; font-size: 11px; border-radius: 7px; border: none; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; transition: opacity .2s; }
+.btn-xs:hover { opacity: .85; }
+.btn-activate { background: rgba(34,197,94,.15); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+.btn-deactivate { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+.btn-danger { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+.btn-purple { background: rgba(124,58,237,.15); color: #a78bfa; border: 1px solid rgba(124,58,237,.3); }
+
+.log-row { font-size: 12px; }
+.log-action { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+.log-detail { color: var(--text-muted); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.log-ip { font-family: var(--mono); font-size: 11px; color: #4a6080; }
+.log-time { font-size: 11px; color: #4a6080; white-space: nowrap; }
+
+.empty-row td { text-align: center; padding: 40px; color: var(--text-muted); }
+@media(max-width:768px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="adm-wrap">
+    <div class="adm-title">لوحة تحكم <span>الأدمن</span> 🛡️</div>
+    <div class="adm-sub">إدارة المستخدمين، الدفعات، وسجلات النظام</div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-icon">👥</div>
+            <div class="stat-val">{{ users|length }}</div>
+            <div class="stat-lbl">إجمالي المستخدمين</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">✅</div>
+            <div class="stat-val">{{ paid_count }}</div>
+            <div class="stat-lbl">حسابات مفعّلة (دفعوا)</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-val">{{ users|length - paid_count }}</div>
+            <div class="stat-lbl">ينتظرون الدفع</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-icon">📊</div>
+            <div class="stat-val">{{ total_reports }}</div>
+            <div class="stat-lbl">إجمالي التقارير</div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="section-card">
+        <div class="card-head">
+            <span style="font-size:20px;">👥</span>
+            <div>
+                <div class="card-head-title">إدارة المستخدمين</div>
+                <div class="card-head-sub">تفعيل/إلغاء الوصول بعد التحقق من الدفع</div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>المستخدم</th>
+                    <th>البريد</th>
+                    <th>حالة الدفع</th>
+                    <th>الصلاحية</th>
+                    <th>تاريخ التسجيل</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><span style="font-family:var(--mono);font-size:11px;color:var(--text-muted);">{{ u[0] }}</span></td>
+                    <td style="font-weight:700;color:var(--text-main);">
+                        {{ u[1] }}
+                        {% if u[5] %}<span class="badge-admin" style="margin-right:6px;">ADMIN</span>{% endif %}
+                    </td>
+                    <td style="color:var(--text-muted);font-size:12px;">{{ u[2] or '—' }}</td>
+                    <td>
+                        {% if u[3] %}
+                        <span class="badge-paid yes">✅ مفعّل</span>
+                        {% else %}
+                        <span class="badge-paid no">⏳ لم يدفع</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u[5] %}
+                        <span class="badge-admin">مدير</span>
+                        {% else %}
+                        <span style="font-size:11px;color:var(--text-muted);">مستخدم</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:11px;color:var(--text-muted);">{{ u[6][:10] if u[6] else '—' }}</td>
+                    <td>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <form method="post" action="/admin/toggle-paid/{{ u[0] }}" style="display:inline;">
+                                {% if u[3] %}
+                                <button class="btn-xs btn-deactivate" type="submit" onclick="return confirm('إلغاء تفعيل {{ u[1] }}؟')">🔒 إلغاء</button>
+                                {% else %}
+                                <button class="btn-xs btn-activate" type="submit" onclick="return confirm('تفعيل {{ u[1] }} بعد التحقق من الدفع؟')">✅ تفعيل</button>
+                                {% endif %}
+                            </form>
+                            <form method="post" action="/admin/toggle-admin/{{ u[0] }}" style="display:inline;">
+                                <button class="btn-xs btn-purple" type="submit">🔑 صلاحية</button>
+                            </form>
+                            <form method="post" action="/admin/delete-user/{{ u[0] }}" style="display:inline;">
+                                <button class="btn-xs btn-danger" type="submit" onclick="return confirm('حذف مستخدم {{ u[1] }} نهائياً؟')">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty-row">لا يوجد مستخدمون بعد</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Audit Logs -->
+    <div class="section-card">
+        <div class="card-head">
+            <span style="font-size:20px;">📋</span>
+            <div>
+                <div class="card-head-title">سجل التدقيق</div>
+                <div class="card-head-sub">آخر 50 حدث في النظام</div>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>الإجراء</th>
+                    <th>التفاصيل</th>
+                    <th>عنوان IP</th>
+                    <th>الوقت</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in audit_logs %}
+                <tr class="log-row">
+                    <td><span class="log-action">{{ log[0] }}</span></td>
+                    <td><span class="log-detail" title="{{ log[1] }}">{{ log[1] }}</span></td>
+                    <td><span class="log-ip">{{ log[2] or '—' }}</span></td>
+                    <td><span class="log-time">{{ log[3][:16] if log[3] else '—' }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="empty-row">لا توجد سجلات</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -25,8 +25,16 @@ def init_db():
         username TEXT UNIQUE,
         password TEXT,
         email TEXT,
+        is_paid INTEGER DEFAULT 0,
+        is_admin INTEGER DEFAULT 0,
         created_at TEXT
     )''')
+    # Migrate existing DB — add columns if missing
+    for col, defval in [('is_paid', '0'), ('is_admin', '0')]:
+        try:
+            c.execute(f"ALTER TABLE users ADD COLUMN {col} INTEGER DEFAULT {defval}")
+        except Exception:
+            pass
     c.execute('''CREATE TABLE IF NOT EXISTS reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -62,6 +70,25 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if not session.get('user_id'):
             return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def payment_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('user_id'):
+            return redirect(url_for('login'))
+        if not session.get('is_paid'):
+            flash('⚠️ يجب تفعيل حسابك أولاً عبر الدفع. تواصل معنا على واتساب.', 'warning')
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('is_admin'):
+            return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -276,12 +303,14 @@ def login():
         password = request.form['password']
         conn = sqlite3.connect('awr.db')
         c = conn.cursor()
-        c.execute("SELECT id, password FROM users WHERE username = ?", (username,))
+        c.execute("SELECT id, password, is_paid, is_admin FROM users WHERE username = ?", (username,))
         user = c.fetchone()
         conn.close()
         if user and check_password_hash(user[1], password):
             session['user_id'] = user[0]
             session['username'] = username
+            session['is_paid'] = bool(user[2])
+            session['is_admin'] = bool(user[3])
             log_action('login', f'User {username} logged in', request.remote_addr)
             flash('تم تسجيل الدخول بنجاح!', 'success')
             return redirect(url_for('dashboard'))
@@ -304,11 +333,15 @@ def dashboard():
     reports = c.fetchall()
     c.execute("SELECT COUNT(*) FROM reports WHERE user_id = ?", (session['user_id'],))
     count = c.fetchone()[0]
+    c.execute("SELECT is_paid FROM users WHERE id = ?", (session['user_id'],))
+    row = c.fetchone()
     conn.close()
-    return render_template('dashboard.html', reports=reports, count=count)
+    is_paid = bool(row[0]) if row else False
+    session['is_paid'] = is_paid
+    return render_template('dashboard.html', reports=reports, count=count, is_paid=is_paid)
 
 @app.route('/upload', methods=['POST'])
-@login_required
+@payment_required
 def upload_file():
     if 'logfile' not in request.files:
         flash('لم يتم اختيار ملف', 'danger')
@@ -329,7 +362,7 @@ def upload_file():
     return redirect(url_for('dashboard'))
 
 @app.route('/download/<int:report_id>')
-@login_required
+@payment_required
 def download_report(report_id):
     conn = sqlite3.connect('awr.db')
     c = conn.cursor()
@@ -368,6 +401,86 @@ def download_report(report_id):
         zf.writestr(f'report_{report_id}.pdf', pdf_bytes)
     zip_buffer.seek(0)
     return send_file(zip_buffer, as_attachment=True, download_name=f'report_{report_id}.zip', mimetype='application/zip')
+
+@app.route('/activate-whatsapp')
+@login_required
+def activate_whatsapp():
+    phone = '+967775113425'
+    msg = f'أريد تفعيل حسابي في AWR Security Labs — اسم المستخدم: {session.get("username","")}'
+    log_action('activation_request', f'User {session.get("username")} requested activation', request.remote_addr)
+    return redirect(f'https://wa.me/{phone}?text={msg}')
+
+@app.route('/admin')
+@admin_required
+def admin_panel():
+    conn = sqlite3.connect('awr.db')
+    c = conn.cursor()
+    c.execute("SELECT id, username, email, is_paid, is_admin, created_at FROM users ORDER BY created_at DESC")
+    users = c.fetchall()
+    c.execute("SELECT COUNT(*) FROM reports")
+    total_reports = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM users WHERE is_paid = 1")
+    paid_count = c.fetchone()[0]
+    c.execute("SELECT action, details, ip, created_at FROM logs ORDER BY created_at DESC LIMIT 50")
+    audit_logs = c.fetchall()
+    conn.close()
+    return render_template('admin.html', users=users, total_reports=total_reports,
+                           paid_count=paid_count, audit_logs=audit_logs)
+
+@app.route('/admin/toggle-paid/<int:user_id>', methods=['POST'])
+@admin_required
+def toggle_paid(user_id):
+    conn = sqlite3.connect('awr.db')
+    c = conn.cursor()
+    c.execute("SELECT username, is_paid FROM users WHERE id = ?", (user_id,))
+    row = c.fetchone()
+    if row:
+        new_status = 0 if row[1] else 1
+        c.execute("UPDATE users SET is_paid = ? WHERE id = ?", (new_status, user_id))
+        conn.commit()
+        action = 'تفعيل' if new_status else 'إلغاء تفعيل'
+        log_action('admin_toggle', f'Admin {action} user {row[0]}', request.remote_addr)
+        flash(f'✅ تم {action} حساب {row[0]}', 'success')
+    conn.close()
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/toggle-admin/<int:user_id>', methods=['POST'])
+@admin_required
+def toggle_admin(user_id):
+    if user_id == session.get('user_id'):
+        flash('لا يمكنك تغيير صلاحيات حسابك الخاص', 'danger')
+        return redirect(url_for('admin_panel'))
+    conn = sqlite3.connect('awr.db')
+    c = conn.cursor()
+    c.execute("SELECT username, is_admin FROM users WHERE id = ?", (user_id,))
+    row = c.fetchone()
+    if row:
+        new_status = 0 if row[1] else 1
+        c.execute("UPDATE users SET is_admin = ? WHERE id = ?", (new_status, user_id))
+        conn.commit()
+        log_action('admin_toggle', f'Admin toggled admin status for {row[0]}', request.remote_addr)
+        flash(f'✅ تم تحديث صلاحيات {row[0]}', 'success')
+    conn.close()
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/delete-user/<int:user_id>', methods=['POST'])
+@admin_required
+def delete_user(user_id):
+    if user_id == session.get('user_id'):
+        flash('لا يمكنك حذف حسابك الخاص', 'danger')
+        return redirect(url_for('admin_panel'))
+    conn = sqlite3.connect('awr.db')
+    c = conn.cursor()
+    c.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+    row = c.fetchone()
+    if row:
+        c.execute("DELETE FROM reports WHERE user_id = ?", (user_id,))
+        c.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+        log_action('admin_delete', f'Admin deleted user {row[0]}', request.remote_addr)
+        flash(f'🗑️ تم حذف المستخدم {row[0]}', 'success')
+    conn.close()
+    return redirect(url_for('admin_panel'))
 
 @app.route('/whatsapp')
 def whatsapp():
