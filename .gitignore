@@ -4,7 +4,6 @@ __pycache__/
 .sqlmap_history
 traffic.txt
 *~
-req*.txt
 .idea/
 .aider*
 .DS_Store
@@ -15,10 +14,9 @@ lib/.DS_Store
 plugins/.DS_Store
 thirdparty/.DS_Store
 *.log
-*.db
-*.csv
 forensics_*
 temp_report/
-__pycache__/
 .env
 uploads/
+report_*.pdf
+/awr.db
