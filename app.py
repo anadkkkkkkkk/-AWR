@@ -349,10 +349,20 @@ def download_report(report_id):
                 md += " | ".join(row.values()) + "\n"
         zf.writestr('REPORT.md', md)
         zf.writestr('report.json', json.dumps(data, indent=2))
-        csv_data = "table,id,username,password\n"
-        for tbl, info in data.get('tables', {}).items():
+        tables_data = data.get('tables', {})
+        all_cols = set()
+        for info in tables_data.values():
+            all_cols.update(info.get('columns', []))
+        all_cols = sorted(all_cols) or ['id', 'username', 'password']
+        csv_lines = ['table,' + ','.join(all_cols)]
+        for tbl, info in tables_data.items():
+            cols = info.get('columns', all_cols)
             for row in info.get('rows', []):
-                csv_data += f"{tbl},{row.get('id','')},{row.get('username','')},{row.get('password','')}\n"
+                vals = [str(row.get(col, '')) for col in all_cols]
+                csv_lines.append(f"{tbl}," + ','.join(vals))
+        if len(csv_lines) == 1:
+            csv_lines.append('N/A,No data extracted from this log file')
+        csv_data = '\n'.join(csv_lines) + '\n'
         zf.writestr('extracted_creds.csv', csv_data)
         pdf_bytes = generate_pdf_bytes(data)
         zf.writestr(f'report_{report_id}.pdf', pdf_bytes)
