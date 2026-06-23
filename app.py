@@ -1,4 +1,4 @@
-import os, re, json, csv, sqlite3, hashlib, io, zipfile, base64, requests, datetime
+import os, re, json, csv, sqlite3, hashlib, io, zipfile, base64, requests, datetime, threading
 from flask import Flask, request, render_template, send_file, jsonify, session, redirect, url_for, flash
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,6 +16,25 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'awr-fallback-dev-key-2025')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+
+# ── Telegram Notifications ─────────────────────────────────
+TELEGRAM_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_CHAT  = os.environ.get('TELEGRAM_CHAT_ID', '')
+
+def send_telegram(message: str):
+    """Send a Telegram message in a background thread so it never blocks requests."""
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT:
+        return
+    def _send():
+        try:
+            requests.post(
+                f'https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage',
+                json={'chat_id': TELEGRAM_CHAT, 'text': message, 'parse_mode': 'HTML'},
+                timeout=8
+            )
+        except Exception:
+            pass
+    threading.Thread(target=_send, daemon=True).start()
 
 def init_db():
     conn = sqlite3.connect('awr.db')
@@ -289,6 +308,14 @@ def register():
                       (username, hashed, email, datetime.datetime.now().isoformat()))
             conn.commit()
             flash('تم التسجيل بنجاح!', 'success')
+            send_telegram(
+                f"🆕 <b>مستخدم جديد سجّل!</b>\n"
+                f"👤 الاسم: <code>{username}</code>\n"
+                f"📧 البريد: <code>{email}</code>\n"
+                f"🌐 IP: <code>{request.remote_addr}</code>\n"
+                f"🕐 الوقت: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+                f"⚡ انتظر تواصله للدفع وتفعيل حسابه!"
+            )
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash('اسم المستخدم موجود مسبقاً', 'danger')
@@ -312,6 +339,13 @@ def login():
             session['is_paid'] = bool(user[2])
             session['is_admin'] = bool(user[3])
             log_action('login', f'User {username} logged in', request.remote_addr)
+            send_telegram(
+                f"🔑 <b>تسجيل دخول</b>\n"
+                f"👤 المستخدم: <code>{username}</code>\n"
+                f"💳 مفعّل: {'✅ نعم' if user[2] else '❌ لا (لم يدفع بعد)'}\n"
+                f"🌐 IP: <code>{request.remote_addr}</code>\n"
+                f"🕐 {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}"
+            )
             flash('تم تسجيل الدخول بنجاح!', 'success')
             return redirect(url_for('dashboard'))
         else:
@@ -356,6 +390,14 @@ def upload_file():
             parser = SQLiLogParser(content)
             parser.save_report(session['user_id'], file.filename)
             log_action('upload', f'User {session["username"]} uploaded {file.filename}', request.remote_addr)
+            send_telegram(
+                f"📤 <b>ملف جديد رُفع!</b>\n"
+                f"👤 المستخدم: <code>{session['username']}</code>\n"
+                f"📁 الملف: <code>{file.filename}</code>\n"
+                f"🗄️ DBMS: <code>{parser.data.get('dbms','Unknown')}</code>\n"
+                f"📊 جداول: {len(parser.data.get('tables',{}))}\n"
+                f"🕐 {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}"
+            )
             flash(f'تم تحليل الملف {file.filename} بنجاح', 'success')
         else:
             flash(f'الملف {file.filename} غير مدعوم', 'warning')
@@ -406,8 +448,16 @@ def download_report(report_id):
 @login_required
 def activate_whatsapp():
     phone = '+967775113425'
-    msg = f'أريد تفعيل حسابي في AWR Security Labs — اسم المستخدم: {session.get("username","")}'
-    log_action('activation_request', f'User {session.get("username")} requested activation', request.remote_addr)
+    uname = session.get('username', '')
+    msg = f'أريد تفعيل حسابي في AWR Security Labs — اسم المستخدم: {uname}'
+    log_action('activation_request', f'User {uname} requested activation', request.remote_addr)
+    send_telegram(
+        f"💳 <b>طلب تفعيل حساب!</b>\n"
+        f"👤 المستخدم: <code>{uname}</code>\n"
+        f"🌐 IP: <code>{request.remote_addr}</code>\n"
+        f"🕐 {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+        f"⚡ <b>تحقق من الدفع وفعّل حسابه من لوحة الأدمن!</b>"
+    )
     return redirect(f'https://wa.me/{phone}?text={msg}')
 
 @app.route('/admin')
@@ -440,6 +490,11 @@ def toggle_paid(user_id):
         conn.commit()
         action = 'تفعيل' if new_status else 'إلغاء تفعيل'
         log_action('admin_toggle', f'Admin {action} user {row[0]}', request.remote_addr)
+        send_telegram(
+            f"🛡️ <b>تم {action} حساب</b>\n"
+            f"👤 المستخدم: <code>{row[0]}</code>\n"
+            f"{'✅ يستطيع الآن الرفع والتحميل' if new_status else '🔒 تم إيقاف وصوله'}"
+        )
         flash(f'✅ تم {action} حساب {row[0]}', 'success')
     conn.close()
     return redirect(url_for('admin_panel'))
@@ -487,6 +542,10 @@ def whatsapp():
     phone = '+967775113425'
     msg = 'أريد خدمة اختبار اختراق'
     return redirect(f'https://wa.me/{phone}?text={msg}')
+
+@app.route('/google2b6e64c6ea7510e2.html')
+def google_verify():
+    return send_from_directory('.', 'google2b6e64c6ea7510e2.html', mimetype='text/html')
 
 @app.route('/sitemap.xml')
 def sitemap():

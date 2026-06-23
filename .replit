@@ -42,3 +42,5 @@ run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "app:app"]
 
 [userenv.shared]
 SECRET_KEY = "awr-security-labs-prod-key-2025-xK9mP2qR7vL"
+TELEGRAM_BOT_TOKEN = "8764995786:AAH6TdLNgNP7n13JKr7M8GSFlgW3Sr87dXE"
+TELEGRAM_CHAT_ID = "7644255708"
