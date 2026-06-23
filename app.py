@@ -185,96 +185,203 @@ def _safe(text):
         return ''
     return str(text).encode('latin-1', errors='replace').decode('latin-1')
 
-def generate_pdf_bytes(data):
+def _section_header(pdf, title):
+    pdf.set_fill_color(6, 16, 30)
+    pdf.set_draw_color(0, 180, 220)
+    pdf.set_font('Arial', 'B', 11)
+    pdf.set_text_color(0, 210, 255)
+    pdf.cell(0, 9, f'  {title}', 'LB', 1, 'L', True)
+    pdf.set_draw_color(0, 80, 120)
+    pdf.ln(2)
+
+def generate_pdf_bytes(data, report_id=0):
+    now = datetime.datetime.now()
+    ref_num = f"AWR-{now.year}-{report_id:04d}"
+    _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    report_date = f"{now.day:02d} {_months[now.month-1]} {now.year}"
+
     pdf = PDF()
     pdf.add_page()
-    pdf.set_auto_page_break(auto=True, margin=20)
+    pdf.set_auto_page_break(auto=True, margin=25)
 
-    pdf.set_fill_color(10, 20, 35)
-    pdf.set_draw_color(0, 80, 120)
+    # ── REPORT IDENTITY BANNER ──────────────────────────────
+    pdf.set_fill_color(5, 12, 24)
+    pdf.rect(10, pdf.get_y(), 190, 30, 'F')
+    y0 = pdf.get_y() + 4
 
-    pdf.set_font('Arial', 'B', 13)
-    pdf.set_text_color(0, 210, 255)
-    pdf.cell(0, 8, 'SCAN SUMMARY', 0, 1)
-    pdf.set_draw_color(0, 210, 255)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(3)
+    pdf.set_xy(15, y0)
+    pdf.set_font('Arial', 'B', 8)
+    pdf.set_text_color(180, 140, 0)
+    pdf.cell(55, 5, 'REPORT REFERENCE', 0, 0)
 
-    pdf.set_font('Arial', '', 11)
-    pdf.set_text_color(220, 220, 220)
-    pdf.cell(50, 8, 'Database System:', 0, 0)
+    pdf.set_xy(80, y0)
+    pdf.set_font('Arial', 'B', 8)
+    pdf.set_text_color(120, 120, 160)
+    pdf.cell(40, 5, 'CLASSIFICATION', 0, 0)
+
+    pdf.set_xy(140, y0)
+    pdf.set_font('Arial', 'B', 8)
+    pdf.set_text_color(120, 120, 160)
+    pdf.cell(40, 5, 'ISSUE DATE', 0, 0)
+
+    pdf.set_xy(15, y0 + 7)
+    pdf.set_font('Arial', 'B', 14)
+    pdf.set_text_color(255, 195, 0)
+    pdf.cell(55, 8, ref_num, 0, 0)
+
+    pdf.set_xy(80, y0 + 7)
     pdf.set_font('Arial', 'B', 11)
-    pdf.set_text_color(255, 200, 0)
-    pdf.cell(0, 8, _safe(data.get('dbms', 'Unknown')), 0, 1)
+    pdf.set_text_color(255, 70, 70)
+    pdf.cell(50, 8, 'CONFIDENTIAL', 0, 0)
 
-    pdf.set_font('Arial', '', 11)
-    pdf.set_text_color(220, 220, 220)
-    pdf.cell(50, 8, 'Vulnerable Parameter:', 0, 0)
-    pdf.set_font('Arial', 'B', 11)
-    pdf.set_text_color(255, 100, 100)
-    pdf.cell(0, 8, _safe(data.get('param', 'N/A')), 0, 1)
-    pdf.ln(6)
+    pdf.set_xy(140, y0 + 7)
+    pdf.set_font('Arial', 'B', 10)
+    pdf.set_text_color(180, 200, 220)
+    pdf.cell(55, 8, report_date, 0, 0)
 
+    pdf.set_y(y0 + 34)
+
+    # ── EXECUTIVE SUMMARY ──────────────────────────────────
+    _section_header(pdf, 'EXECUTIVE SUMMARY')
+    dbms  = _safe(data.get('dbms', 'Unknown'))
+    param = _safe(data.get('param', 'N/A'))
     tables = data.get('tables', {})
-    if tables:
-        pdf.set_font('Arial', 'B', 13)
-        pdf.set_text_color(0, 210, 255)
-        pdf.cell(0, 8, f'EXTRACTED DATA ({len(tables)} table(s) found)', 0, 1)
-        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-        pdf.ln(3)
+    total_rows = sum(len(i.get('rows', [])) for i in tables.values())
+    risk = 'CRITICAL' if tables else 'HIGH'
 
+    summary_lines = [
+        f'This security assessment identified an active SQL Injection vulnerability in the target application.',
+        f'Database Engine : {dbms}',
+        f'Vulnerable Param: {param}',
+        f'Tables Exposed  : {len(tables)}   |   Records Extracted: {total_rows}   |   Risk Level: {risk}',
+        f'Assessment Date : {report_date}   |   Reference: {ref_num}',
+    ]
+    pdf.set_font('Arial', '', 10)
+    for i, line in enumerate(summary_lines):
+        if i == 0:
+            pdf.set_text_color(200, 200, 200)
+        elif ':' in line:
+            pdf.set_text_color(160, 200, 255)
+        else:
+            pdf.set_text_color(200, 200, 200)
+        pdf.cell(0, 7, line, 0, 1)
+    pdf.ln(4)
+
+    # ── SCAN DETAILS ───────────────────────────────────────
+    _section_header(pdf, 'SCAN DETAILS')
+    details = [
+        ('Database System', dbms, (255, 200, 0)),
+        ('Vulnerable Parameter', param, (255, 100, 100)),
+        ('Tables Discovered', str(len(tables)), (0, 210, 255)),
+        ('Total Records Found', str(total_rows), (0, 210, 255)),
+        ('Risk Level', risk, (255, 70, 70) if risk == 'CRITICAL' else (255, 160, 0)),
+    ]
+    for label, value, color in details:
+        pdf.set_font('Arial', '', 10)
+        pdf.set_text_color(160, 170, 190)
+        pdf.cell(65, 8, label + ':', 0, 0)
+        pdf.set_font('Arial', 'B', 10)
+        pdf.set_text_color(*color)
+        pdf.cell(0, 8, value, 0, 1)
+    pdf.ln(4)
+
+    # ── EXTRACTED DATA ─────────────────────────────────────
+    if tables:
+        _section_header(pdf, f'EXTRACTED DATA  ({len(tables)} TABLE(S) COMPROMISED)')
         for tbl, info in tables.items():
-            pdf.set_fill_color(15, 30, 50)
-            pdf.set_font('Arial', 'B', 11)
-            pdf.set_text_color(124, 58, 237)
+            pdf.set_fill_color(20, 40, 65)
+            pdf.set_font('Arial', 'B', 10)
+            pdf.set_text_color(160, 120, 255)
             pdf.cell(0, 8, f'  Table: {_safe(tbl)}', 1, 1, 'L', True)
 
             cols = info.get('columns', [])
-            if cols:
-                pdf.set_font('Arial', 'B', 9)
-                pdf.set_text_color(180, 180, 180)
-                pdf.set_fill_color(8, 20, 35)
-                col_w = min(60, 180 // max(len(cols), 1))
-                for col in cols:
-                    pdf.cell(col_w, 7, _safe(col).upper(), 1, 0, 'C', True)
-                pdf.ln()
+            rows = info.get('rows', [])
+            if not cols:
+                pdf.ln(2)
+                continue
 
-            pdf.set_font('Arial', '', 9)
-            for i, row in enumerate(info.get('rows', [])):
-                pdf.set_fill_color(12, 25, 42) if i % 2 == 0 else pdf.set_fill_color(16, 32, 52)
-                pdf.set_text_color(200, 200, 200)
-                for val in row.values():
-                    pdf.cell(col_w, 7, _safe(val), 1, 0, 'C', True)
-                pdf.ln()
-            pdf.ln(4)
+            num_cols = max(len(cols), 1)
+            col_w = min(57, int(180 / num_cols))
 
-    pdf.set_font('Arial', 'B', 13)
-    pdf.set_text_color(0, 210, 255)
-    pdf.cell(0, 8, 'RECOMMENDATIONS', 0, 1)
-    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
-    pdf.ln(3)
-    recs_en = [
-        '1. Use Parameterized Queries / Prepared Statements for all DB interactions.',
-        '2. Sanitize and validate all user inputs on the server side.',
-        '3. Apply Least Privilege principle to database accounts.',
-        '4. Enable a Web Application Firewall (WAF).',
-        '5. Conduct periodic VAPT assessments.',
-    ]
+            pdf.set_fill_color(8, 22, 40)
+            pdf.set_font('Arial', 'B', 8)
+            pdf.set_text_color(0, 190, 230)
+            for col in cols[:3]:
+                pdf.cell(col_w, 7, _safe(col).upper(), 1, 0, 'C', True)
+            pdf.ln()
+
+            pdf.set_font('Arial', '', 8)
+            for i, row in enumerate(rows):
+                pdf.set_fill_color(12, 26, 44) if i % 2 == 0 else pdf.set_fill_color(16, 33, 54)
+                pdf.set_text_color(190, 210, 230)
+                for val in list(row.values())[:3]:
+                    pdf.cell(col_w, 7, _safe(str(val))[:28], 1, 0, 'C', True)
+                pdf.ln()
+            pdf.ln(5)
+
+    # ── RECOMMENDATIONS ────────────────────────────────────
+    _section_header(pdf, 'REMEDIATION RECOMMENDATIONS')
+    dbms_lower = data.get('dbms', '').lower()
+    if 'mysql' in dbms_lower:
+        recs = [
+            '1. Replace all dynamic queries with mysqli_prepare() / PDO prepared statements.',
+            '2. Enable MySQL strict mode and audit logging.',
+            '3. Apply Least Privilege - restrict DB user to SELECT only where possible.',
+            '4. Deploy a Web Application Firewall (e.g. ModSecurity, Cloudflare WAF).',
+            '5. Rotate all database credentials immediately.',
+        ]
+    elif 'sqlite' in dbms_lower:
+        recs = [
+            '1. Use PDO with prepared statements for all SQLite interactions.',
+            '2. Move SQLite file outside the web root directory.',
+            '3. Set file permissions to 600 and restrict web server access.',
+            '4. Filter and escape all user-supplied inputs server-side.',
+            '5. Consider migrating to a more hardened RDBMS for production use.',
+        ]
+    elif 'postgres' in dbms_lower or 'pg' in dbms_lower:
+        recs = [
+            '1. Use parameterized queries via psycopg2 or SQLAlchemy ORM.',
+            '2. Enable pg_audit extension for query-level logging.',
+            '3. Apply row-level security (RLS) policies.',
+            '4. Rotate compromised credentials and revoke excess privileges.',
+            '5. Schedule quarterly VAPT assessments.',
+        ]
+    else:
+        recs = [
+            '1. Use Parameterized Queries / Prepared Statements for all DB interactions.',
+            '2. Sanitize and validate all user inputs on the server side.',
+            '3. Apply Least Privilege principle to all database accounts.',
+            '4. Enable a Web Application Firewall (WAF).',
+            '5. Conduct periodic VAPT assessments (recommended: every 6 months).',
+        ]
+
     pdf.set_font('Arial', '', 10)
-    pdf.set_text_color(180, 220, 180)
-    for rec in recs_en:
+    for rec in recs:
+        pdf.set_text_color(160, 220, 160)
         pdf.cell(0, 7, rec, 0, 1)
     pdf.ln(6)
 
-    pdf.set_fill_color(4, 15, 25)
-    pdf.set_draw_color(0, 80, 120)
-    pdf.rect(10, pdf.get_y(), 190, 20, 'DF')
-    pdf.set_font('Arial', 'B', 10)
-    pdf.set_text_color(0, 210, 255)
-    pdf.cell(0, 8, 'Contact: +967775113425  |  AWR Security Labs  |  CONFIDENTIAL', 0, 1, 'C')
+    # ── AUTHORISED SIGNATURE ───────────────────────────────
+    pdf.set_fill_color(5, 14, 26)
+    pdf.set_draw_color(100, 80, 0)
+    sig_y = pdf.get_y()
+    pdf.rect(10, sig_y, 190, 32, 'DF')
+    pdf.set_xy(15, sig_y + 4)
+    pdf.set_font('Arial', 'B', 9)
+    pdf.set_text_color(180, 140, 0)
+    pdf.cell(0, 6, 'DIGITALLY AUTHORISED BY:', 0, 1)
+    pdf.set_x(15)
+    pdf.set_font('Arial', 'B', 13)
+    pdf.set_text_color(255, 200, 0)
+    pdf.cell(0, 7, 'AWR Security Labs :: Security Director', 0, 1)
+    pdf.set_x(15)
+    pdf.set_font('Arial', 'I', 8)
+    pdf.set_text_color(120, 130, 150)
+    pdf.cell(0, 5, f'Issued: {report_date}  |  Ref: {ref_num}  |  Contact: +967775113425', 0, 1)
+    pdf.set_x(15)
     pdf.set_font('Arial', '', 8)
-    pdf.set_text_color(100, 120, 140)
-    pdf.cell(0, 6, 'This report is for authorized use only. Unauthorized distribution is prohibited.', 0, 1, 'C')
+    pdf.set_text_color(80, 90, 110)
+    pdf.cell(0, 5, 'This report is CONFIDENTIAL. Authorized recipient use only. Unauthorized distribution is prohibited.', 0, 1)
 
     return pdf.output(dest='S').encode('latin-1')
 
@@ -439,7 +546,7 @@ def download_report(report_id):
             csv_lines.append('N/A,No data extracted from this log file')
         csv_data = '\n'.join(csv_lines) + '\n'
         zf.writestr('extracted_creds.csv', csv_data)
-        pdf_bytes = generate_pdf_bytes(data)
+        pdf_bytes = generate_pdf_bytes(data, report_id)
         zf.writestr(f'report_{report_id}.pdf', pdf_bytes)
     zip_buffer.seek(0)
     return send_file(zip_buffer, as_attachment=True, download_name=f'report_{report_id}.zip', mimetype='application/zip')
@@ -542,6 +649,14 @@ def whatsapp():
     phone = '+967775113425'
     msg = 'أريد خدمة اختبار اختراق'
     return redirect(f'https://wa.me/{phone}?text={msg}')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
 
 @app.route('/google2b6e64c6ea7510e2.html')
 def google_verify():
